@@ -2,6 +2,7 @@ from decimal import Decimal
 from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
 from models import db, Employee, Department, Supplier, Contract, Product, ProductCategory, Sale, SaleItem, WorkSchedule, Delivery, DeliveryItem, ContractProduct, User, UserRequest
 from queries import BookstoreQueries
+from sale_values import SaleOrder
 from datetime import datetime, date, timedelta, timezone
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_moment import Moment
@@ -558,32 +559,14 @@ def find_sale_item_error(new_items, employee):
 
 def replace_sale_items(sale, new_items, discount_rate=0.0):
     """Допоміжна функція: списує товари зі складу, замінює позиції продажу на нові й повертає нову суму."""
-    for product_id, quantity in new_items.items():
-        product = Product.query.get(product_id)
-        product.stock_quantity -= quantity
+    order = SaleOrder.from_items(new_items, discount_rate)
+    order.write_off_stock()
 
     SaleItem.query.filter_by(sale_id=sale.id).delete()
     db.session.flush()
 
-    total_amount = 0
-    for product_id, quantity in new_items.items():
-        product = Product.query.get(product_id)
-        if discount_rate:
-            # БАГ (симуляція): знижка перезаписує базову ціну в спільному об'єкті Product
-            product.price = float(product.price) * (1 - discount_rate)
-        total_price = float(product.price) * quantity
-
-        db.session.add(SaleItem(
-            sale_id=sale.id,
-            product_id=product_id,
-            quantity=quantity,
-            unit_price=product.price,
-            total_price=total_price
-        ))
-
-        total_amount += total_price
-
-    return total_amount
+    db.session.add_all(order.to_items(sale.id))
+    return order.total
 
 
 @app.route('/sales/edit/<int:sale_id>', methods=['GET', 'POST'])
