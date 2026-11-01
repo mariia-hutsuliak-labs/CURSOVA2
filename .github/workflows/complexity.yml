@@ -1,0 +1,47 @@
+name: Complexity and Hotspots
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  complexity-scan:
+    runs-on: ubuntu-latest
+    container: python:3.11
+    steps:
+      - name: Checkout (повна історія Git для Churn)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Allow git in container
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Install Radon (версія з ЛР5)
+        run: pip install radon==6.0.1
+
+      - name: Scan complexity -> JSON
+        run: |
+          mkdir -p reports
+          python -m radon cc -j -s -e ".venv/*,venv/*,exp1/*,tests/*" . > reports/ci-radon-cc.json
+          python -m radon cc -a -s -e ".venv/*,venv/*,exp1/*,tests/*" . | tail -3
+
+      - name: Code Churn (git log, останні 90 днів)
+        run: |
+          git log --since="90 days ago" --format=format: --name-only | egrep -v '^$' | sort | uniq -c | sort -nr > reports/churn.txt
+          head -15 reports/churn.txt
+
+      - name: Build Hotspot matrix
+        run: |
+          python scripts/hotspots.py reports/ci-radon-cc.json reports/churn.txt reports/hotspot-matrix.csv | tee reports/hotspot-matrix.md
+          cat reports/hotspot-matrix.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: complexity-reports
+          path: |
+            reports/ci-radon-cc.json
+            reports/churn.txt
+            reports/hotspot-matrix.csv
+            reports/hotspot-matrix.md
