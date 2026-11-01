@@ -454,12 +454,8 @@ def add_sale():
         if not pid or not qty:
             continue
 
-        try:
-            quantity = int(qty)
-        except ValueError:
-            continue
-
-        if quantity <= 0:
+        quantity = parse_positive_int(qty)
+        if quantity is None:
             continue
 
         product = Product.query.get(int(pid))
@@ -560,7 +556,7 @@ def find_sale_item_error(new_items, employee):
     return None
 
 
-def replace_sale_items(sale, new_items):
+def replace_sale_items(sale, new_items, discount_rate=0.0):
     """Допоміжна функція: списує товари зі складу, замінює позиції продажу на нові й повертає нову суму."""
     for product_id, quantity in new_items.items():
         product = Product.query.get(product_id)
@@ -572,6 +568,9 @@ def replace_sale_items(sale, new_items):
     total_amount = 0
     for product_id, quantity in new_items.items():
         product = Product.query.get(product_id)
+        if discount_rate:
+            # БАГ (симуляція): знижка перезаписує базову ціну в спільному об'єкті Product
+            product.price = float(product.price) * (1 - discount_rate)
         total_price = float(product.price) * quantity
 
         db.session.add(SaleItem(
