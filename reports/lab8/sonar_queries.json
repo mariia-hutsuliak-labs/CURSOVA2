@@ -1,0 +1,1 @@
+{"component":{"key":"CURSOVA2:queries.py","name":"queries.py","qualifier":"FIL","path":"queries.py","language":"py","measures":[{"metric":"complexity","value":"32"},{"metric":"functions","value":"10"},{"metric":"cognitive_complexity","value":"29","bestValue":false},{"metric":"classes","value":"1"},{"metric":"ncloc","value":"185"}]}}

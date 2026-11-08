@@ -1,0 +1,1 @@
+{"component":{"key":"CURSOVA2:models.py","name":"models.py","qualifier":"FIL","path":"models.py","language":"py","measures":[{"metric":"complexity","value":"35"},{"metric":"functions","value":"34"},{"metric":"cognitive_complexity","value":"1","bestValue":false},{"metric":"classes","value":"14"},{"metric":"ncloc","value":"206"}]}}
