@@ -266,6 +266,23 @@ def compute_rfc(ci):
     return len(ci.methods) + len(calls)
 
 
+def inherited_public(ci, by_name, seen=()):
+    """Публічні методи, успадковані від проєктних предків (усі рівні вгору)."""
+    names = set()
+    for b in ci.bases:
+        short = b.split(".")[-1]
+        if short in by_name and short not in seen:
+            parent = by_name[short]
+            names |= {m for m in parent.method_names if not m.startswith("_")}
+            names |= inherited_public(parent, by_name, seen + (short,))
+    return names
+
+
+def pim_total(ci, by_name):
+    own = {m for m in ci.method_names if not m.startswith("_")}
+    return len(own | inherited_public(ci, by_name))
+
+
 def class_metrics(ci, by_name, modules):
     proj_cls, ext = compute_cbo(ci, by_name, modules)
     comps, lcom_norm = lcom4(ci)
@@ -283,6 +300,7 @@ def class_metrics(ci, by_name, modules):
         "DIT": dit(ci, by_name),
         "RFC": compute_rfc(ci),
         "PIM": sum(1 for m in ci.method_names if not m.startswith("_")),
+        "PIM_total": pim_total(ci, by_name),
         "overridden": overridden(ci, by_name),
     }, proj_cls
 
@@ -401,12 +419,12 @@ def analyse(root, label, focus=None):
 def print_focus(focus):
     if not focus:
         return
-    hdr = "%-24s %4s %4s %4s %6s %5s %4s %4s"
+    hdr = "%-24s %4s %4s %4s %6s %5s %4s %4s %5s %4s"
     print("\nФокус (--focus):")
-    print(hdr % ("class", "met", "WMC", "CBO", "LCOM4", "LCOMn", "DIT", "PIM"))
-    for r in sorted(focus, key=lambda r: -r["CBO"]):
-        print(hdr % (r["class"][:24], r["methods"], r["WMC"], r["CBO"],
-                     r["LCOM4"], r["LCOM_norm"], r["DIT"], r["PIM"]))
+    print(hdr % ("class", "met", "WMC", "CBO", "LCOM4", "LCOMn", "DIT", "PIM", "PIMt", "OVR"))
+    for r in sorted(focus, key=lambda r: (-r["DIT"], -r["CBO"])):
+        print(hdr % (r["class"][:24], r["methods"], r["WMC"], r["CBO"], r["LCOM4"],
+                     r["LCOM_norm"], r["DIT"], r["PIM"], r["PIM_total"], r["overridden"]))
 
 
 def print_report(result):
