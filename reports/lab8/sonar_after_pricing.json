@@ -1,0 +1,32 @@
+{
+    "component": {
+        "key": "CURSOVA2:pricing/calculators.py",
+        "name": "calculators.py",
+        "qualifier": "FIL",
+        "path": "pricing/calculators.py",
+        "language": "py",
+        "measures": [
+            {
+                "metric": "complexity",
+                "value": "50"
+            },
+            {
+                "metric": "functions",
+                "value": "44"
+            },
+            {
+                "metric": "cognitive_complexity",
+                "value": "6",
+                "bestValue": false
+            },
+            {
+                "metric": "classes",
+                "value": "3"
+            },
+            {
+                "metric": "ncloc",
+                "value": "140"
+            }
+        ]
+    }
+}

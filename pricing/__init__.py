@@ -5,8 +5,7 @@ from pricing.calculators import (BasePriceCalculator, LoyaltyPriceCalculator,
 
 def build_calculators():
     """Єдине місце створення калькуляторів (composition root для демо)."""
-    return {
-        "base": BasePriceCalculator(),
-        "retail": RetailPriceCalculator(),
-        "loyalty": LoyaltyPriceCalculator("gold"),
-    }
+    base = BasePriceCalculator()
+    retail = RetailPriceCalculator(base)             # залежності передаються через конструктор
+    loyalty = LoyaltyPriceCalculator(retail, "gold")
+    return {"base": base, "retail": retail, "loyalty": loyalty}

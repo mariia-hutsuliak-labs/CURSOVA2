@@ -1,0 +1,1018 @@
+{
+  "label": "inh_fixed",
+  "mood": {
+    "classes": 43,
+    "MHF_percent": 6.25,
+    "AHF_percent": 7.6,
+    "COF_percent": 1.72,
+    "methods_total": 96,
+    "methods_hidden": 6,
+    "attributes_total": 171,
+    "attributes_hidden": 13,
+    "coupled_pairs": 31
+  },
+  "files": {
+    "privacy/consent.py": {
+      "role": "Core Domain",
+      "classes": 9,
+      "WMC_sum": 10,
+      "CBO_max": 3,
+      "CBO_max_class": "ConsentPolicyGate",
+      "LCOM_norm_max": 0.0,
+      "DIT_max": 2
+    },
+    "models.py": {
+      "role": "Utility/DTO",
+      "classes": 14,
+      "WMC_sum": 35,
+      "CBO_max": 4,
+      "CBO_max_class": "User",
+      "LCOM_norm_max": 1.0,
+      "DIT_max": 2
+    }
+  },
+  "classes": [
+    {
+      "class": "SaleLine",
+      "file": "sale_values.py",
+      "bases": [],
+      "methods": 4,
+      "WMC": 6,
+      "CBO": 4,
+      "CBO_project_classes": [
+        "Product",
+        "SaleItem"
+      ],
+      "CBO_external": [
+        "Decimal",
+        "dataclass"
+      ],
+      "LCOM4": 1,
+      "LCOM_norm": 0.0,
+      "DIT": 1,
+      "RFC": 8,
+      "PIM": 3,
+      "PIM_total": 3,
+      "overridden": 0
+    },
+    {
+      "class": "SaleOrder",
+      "file": "sale_values.py",
+      "bases": [],
+      "methods": 4,
+      "WMC": 8,
+      "CBO": 3,
+      "CBO_project_classes": [
+        "Product",
+        "SaleLine"
+      ],
+      "CBO_external": [
+        "dataclass"
+      ],
+      "LCOM4": 2,
+      "LCOM_norm": 0.33,
+      "DIT": 1,
+      "RFC": 12,
+      "PIM": 4,
+      "PIM_total": 4,
+      "overridden": 0
+    },
+    {
+      "class": "User",
+      "file": "models.py",
+      "bases": [
+        "db.Model",
+        "UserMixin"
+      ],
+      "methods": 17,
+      "WMC": 18,
+      "CBO": 4,
+      "CBO_project_classes": [],
+      "CBO_external": [
+        "UserMixin",
+        "check_password_hash",
+        "datetime",
+        "generate_password_hash"
+      ],
+      "LCOM4": 3,
+      "LCOM_norm": 0.13,
+      "DIT": 2,
+      "RFC": 19,
+      "PIM": 16,
+      "PIM_total": 16,
+      "overridden": 0
+    },
+    {
+      "class": "UserRequest",
+      "file": "models.py",
+      "bases": [
+        "db.Model"
+      ],
+      "methods": 2,
+      "WMC": 2,
+      "CBO": 2,
+      "CBO_project_classes": [],
+      "CBO_external": [
+        "datetime",
+        "generate_password_hash"
+      ],
+      "LCOM4": 1,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 3,
+      "PIM": 1,
+      "PIM_total": 1,
+      "overridden": 0
+    },
+    {
+      "class": "Department",
+      "file": "models.py",
+      "bases": [
+        "db.Model"
+      ],
+      "methods": 1,
+      "WMC": 1,
+      "CBO": 0,
+      "CBO_project_classes": [],
+      "CBO_external": [],
+      "LCOM4": 0,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 1,
+      "PIM": 0,
+      "PIM_total": 0,
+      "overridden": 0
+    },
+    {
+      "class": "Employee",
+      "file": "models.py",
+      "bases": [
+        "db.Model"
+      ],
+      "methods": 4,
+      "WMC": 4,
+      "CBO": 1,
+      "CBO_project_classes": [],
+      "CBO_external": [
+        "date"
+      ],
+      "LCOM4": 3,
+      "LCOM_norm": 1.0,
+      "DIT": 2,
+      "RFC": 5,
+      "PIM": 3,
+      "PIM_total": 3,
+      "overridden": 0
+    },
+    {
+      "class": "Supplier",
+      "file": "models.py",
+      "bases": [
+        "db.Model"
+      ],
+      "methods": 1,
+      "WMC": 1,
+      "CBO": 0,
+      "CBO_project_classes": [],
+      "CBO_external": [],
+      "LCOM4": 0,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 1,
+      "PIM": 0,
+      "PIM_total": 0,
+      "overridden": 0
+    },
+    {
+      "class": "Contract",
+      "file": "models.py",
+      "bases": [
+        "db.Model"
+      ],
+      "methods": 1,
+      "WMC": 1,
+      "CBO": 0,
+      "CBO_project_classes": [],
+      "CBO_external": [],
+      "LCOM4": 0,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 1,
+      "PIM": 0,
+      "PIM_total": 0,
+      "overridden": 0
+    },
+    {
+      "class": "ProductCategory",
+      "file": "models.py",
+      "bases": [
+        "db.Model"
+      ],
+      "methods": 1,
+      "WMC": 1,
+      "CBO": 0,
+      "CBO_project_classes": [],
+      "CBO_external": [],
+      "LCOM4": 0,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 1,
+      "PIM": 0,
+      "PIM_total": 0,
+      "overridden": 0
+    },
+    {
+      "class": "Product",
+      "file": "models.py",
+      "bases": [
+        "db.Model"
+      ],
+      "methods": 1,
+      "WMC": 1,
+      "CBO": 0,
+      "CBO_project_classes": [],
+      "CBO_external": [],
+      "LCOM4": 0,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 1,
+      "PIM": 0,
+      "PIM_total": 0,
+      "overridden": 0
+    },
+    {
+      "class": "ContractProduct",
+      "file": "models.py",
+      "bases": [
+        "db.Model"
+      ],
+      "methods": 1,
+      "WMC": 1,
+      "CBO": 0,
+      "CBO_project_classes": [],
+      "CBO_external": [],
+      "LCOM4": 0,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 1,
+      "PIM": 0,
+      "PIM_total": 0,
+      "overridden": 0
+    },
+    {
+      "class": "Delivery",
+      "file": "models.py",
+      "bases": [
+        "db.Model"
+      ],
+      "methods": 1,
+      "WMC": 1,
+      "CBO": 1,
+      "CBO_project_classes": [],
+      "CBO_external": [
+        "date"
+      ],
+      "LCOM4": 0,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 1,
+      "PIM": 0,
+      "PIM_total": 0,
+      "overridden": 0
+    },
+    {
+      "class": "DeliveryItem",
+      "file": "models.py",
+      "bases": [
+        "db.Model"
+      ],
+      "methods": 1,
+      "WMC": 1,
+      "CBO": 0,
+      "CBO_project_classes": [],
+      "CBO_external": [],
+      "LCOM4": 0,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 1,
+      "PIM": 0,
+      "PIM_total": 0,
+      "overridden": 0
+    },
+    {
+      "class": "WorkSchedule",
+      "file": "models.py",
+      "bases": [
+        "db.Model"
+      ],
+      "methods": 1,
+      "WMC": 1,
+      "CBO": 0,
+      "CBO_project_classes": [],
+      "CBO_external": [],
+      "LCOM4": 0,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 1,
+      "PIM": 0,
+      "PIM_total": 0,
+      "overridden": 0
+    },
+    {
+      "class": "Sale",
+      "file": "models.py",
+      "bases": [
+        "db.Model"
+      ],
+      "methods": 1,
+      "WMC": 1,
+      "CBO": 2,
+      "CBO_project_classes": [],
+      "CBO_external": [
+        "date",
+        "datetime"
+      ],
+      "LCOM4": 0,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 1,
+      "PIM": 0,
+      "PIM_total": 0,
+      "overridden": 0
+    },
+    {
+      "class": "SaleItem",
+      "file": "models.py",
+      "bases": [
+        "db.Model"
+      ],
+      "methods": 1,
+      "WMC": 1,
+      "CBO": 0,
+      "CBO_project_classes": [],
+      "CBO_external": [],
+      "LCOM4": 0,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 1,
+      "PIM": 0,
+      "PIM_total": 0,
+      "overridden": 0
+    },
+    {
+      "class": "DependencyUnavailableError",
+      "file": "resilience.py",
+      "bases": [
+        "Exception"
+      ],
+      "methods": 0,
+      "WMC": 0,
+      "CBO": 0,
+      "CBO_project_classes": [],
+      "CBO_external": [],
+      "LCOM4": 0,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 0,
+      "PIM": 0,
+      "PIM_total": 0,
+      "overridden": 0
+    },
+    {
+      "class": "PrivacyAuditEvent",
+      "file": "privacy/audit.py",
+      "bases": [
+        "db.Model"
+      ],
+      "methods": 1,
+      "WMC": 1,
+      "CBO": 2,
+      "CBO_project_classes": [],
+      "CBO_external": [
+        "datetime",
+        "db"
+      ],
+      "LCOM4": 0,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 1,
+      "PIM": 0,
+      "PIM_total": 0,
+      "overridden": 0
+    },
+    {
+      "class": "ContactDTO",
+      "file": "privacy/demo_logging.py",
+      "bases": [],
+      "methods": 0,
+      "WMC": 0,
+      "CBO": 1,
+      "CBO_project_classes": [],
+      "CBO_external": [
+        "dataclass"
+      ],
+      "LCOM4": 0,
+      "LCOM_norm": 0.0,
+      "DIT": 1,
+      "RFC": 0,
+      "PIM": 0,
+      "PIM_total": 0,
+      "overridden": 0
+    },
+    {
+      "class": "UserDTO",
+      "file": "privacy/demo_logging.py",
+      "bases": [],
+      "methods": 0,
+      "WMC": 0,
+      "CBO": 2,
+      "CBO_project_classes": [
+        "ContactDTO"
+      ],
+      "CBO_external": [
+        "dataclass"
+      ],
+      "LCOM4": 0,
+      "LCOM_norm": 0.0,
+      "DIT": 1,
+      "RFC": 0,
+      "PIM": 0,
+      "PIM_total": 0,
+      "overridden": 0
+    },
+    {
+      "class": "CorrelationIdFilter",
+      "file": "privacy/secure_logging.py",
+      "bases": [
+        "logging.Filter"
+      ],
+      "methods": 1,
+      "WMC": 2,
+      "CBO": 1,
+      "CBO_project_classes": [],
+      "CBO_external": [
+        "logging"
+      ],
+      "LCOM4": 1,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 3,
+      "PIM": 1,
+      "PIM_total": 1,
+      "overridden": 0
+    },
+    {
+      "class": "PiiSanitizingFilter",
+      "file": "privacy/secure_logging.py",
+      "bases": [
+        "logging.Filter"
+      ],
+      "methods": 1,
+      "WMC": 8,
+      "CBO": 4,
+      "CBO_project_classes": [],
+      "CBO_external": [
+        "logging",
+        "sanitize_text",
+        "sanitize_value",
+        "traceback"
+      ],
+      "LCOM4": 1,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 11,
+      "PIM": 1,
+      "PIM_total": 1,
+      "overridden": 0
+    },
+    {
+      "class": "SecureFormatter",
+      "file": "privacy/secure_logging.py",
+      "bases": [
+        "logging.Formatter"
+      ],
+      "methods": 2,
+      "WMC": 6,
+      "CBO": 5,
+      "CBO_project_classes": [],
+      "CBO_external": [
+        "Optional",
+        "json",
+        "logging",
+        "sanitize_text",
+        "sanitize_value"
+      ],
+      "LCOM4": 2,
+      "LCOM_norm": 1.0,
+      "DIT": 2,
+      "RFC": 14,
+      "PIM": 1,
+      "PIM_total": 1,
+      "overridden": 0
+    },
+    {
+      "class": "SecureJsonFormatter",
+      "file": "privacy/secure_logging.py",
+      "bases": [
+        "logging.Formatter"
+      ],
+      "methods": 1,
+      "WMC": 8,
+      "CBO": 7,
+      "CBO_project_classes": [],
+      "CBO_external": [
+        "datetime",
+        "json",
+        "logging",
+        "sanitize_text",
+        "sanitize_value",
+        "timezone",
+        "traceback"
+      ],
+      "LCOM4": 1,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 15,
+      "PIM": 1,
+      "PIM_total": 1,
+      "overridden": 0
+    },
+    {
+      "class": "SubjectNotFound",
+      "file": "privacy/erasure.py",
+      "bases": [
+        "Exception"
+      ],
+      "methods": 0,
+      "WMC": 0,
+      "CBO": 0,
+      "CBO_project_classes": [],
+      "CBO_external": [],
+      "LCOM4": 0,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 0,
+      "PIM": 0,
+      "PIM_total": 0,
+      "overridden": 0
+    },
+    {
+      "class": "UserConsent",
+      "file": "privacy/consent.py",
+      "bases": [
+        "db.Model"
+      ],
+      "methods": 0,
+      "WMC": 0,
+      "CBO": 2,
+      "CBO_project_classes": [],
+      "CBO_external": [
+        "datetime",
+        "db"
+      ],
+      "LCOM4": 0,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 0,
+      "PIM": 0,
+      "PIM_total": 0,
+      "overridden": 0
+    },
+    {
+      "class": "ConsentEvent",
+      "file": "privacy/consent.py",
+      "bases": [
+        "db.Model"
+      ],
+      "methods": 0,
+      "WMC": 0,
+      "CBO": 2,
+      "CBO_project_classes": [],
+      "CBO_external": [
+        "datetime",
+        "db"
+      ],
+      "LCOM4": 0,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 0,
+      "PIM": 0,
+      "PIM_total": 0,
+      "overridden": 0
+    },
+    {
+      "class": "OutboxMessage",
+      "file": "privacy/consent.py",
+      "bases": [
+        "db.Model"
+      ],
+      "methods": 0,
+      "WMC": 0,
+      "CBO": 2,
+      "CBO_project_classes": [],
+      "CBO_external": [
+        "datetime",
+        "db"
+      ],
+      "LCOM4": 0,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 0,
+      "PIM": 0,
+      "PIM_total": 0,
+      "overridden": 0
+    },
+    {
+      "class": "UnknownPurpose",
+      "file": "privacy/consent.py",
+      "bases": [
+        "ValueError"
+      ],
+      "methods": 0,
+      "WMC": 0,
+      "CBO": 0,
+      "CBO_project_classes": [],
+      "CBO_external": [],
+      "LCOM4": 0,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 0,
+      "PIM": 0,
+      "PIM_total": 0,
+      "overridden": 0
+    },
+    {
+      "class": "InvalidSource",
+      "file": "privacy/consent.py",
+      "bases": [
+        "ValueError"
+      ],
+      "methods": 0,
+      "WMC": 0,
+      "CBO": 0,
+      "CBO_project_classes": [],
+      "CBO_external": [],
+      "LCOM4": 0,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 0,
+      "PIM": 0,
+      "PIM_total": 0,
+      "overridden": 0
+    },
+    {
+      "class": "PolicyVersionMismatch",
+      "file": "privacy/consent.py",
+      "bases": [
+        "Exception"
+      ],
+      "methods": 1,
+      "WMC": 1,
+      "CBO": 0,
+      "CBO_project_classes": [],
+      "CBO_external": [],
+      "LCOM4": 1,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 3,
+      "PIM": 0,
+      "PIM_total": 0,
+      "overridden": 0
+    },
+    {
+      "class": "Decision",
+      "file": "privacy/consent.py",
+      "bases": [],
+      "methods": 0,
+      "WMC": 0,
+      "CBO": 1,
+      "CBO_project_classes": [],
+      "CBO_external": [
+        "dataclass"
+      ],
+      "LCOM4": 0,
+      "LCOM_norm": 0.0,
+      "DIT": 1,
+      "RFC": 0,
+      "PIM": 0,
+      "PIM_total": 0,
+      "overridden": 0
+    },
+    {
+      "class": "ConsentDenied",
+      "file": "privacy/consent.py",
+      "bases": [
+        "Exception"
+      ],
+      "methods": 1,
+      "WMC": 1,
+      "CBO": 1,
+      "CBO_project_classes": [
+        "Decision"
+      ],
+      "CBO_external": [],
+      "LCOM4": 1,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 3,
+      "PIM": 0,
+      "PIM_total": 0,
+      "overridden": 0
+    },
+    {
+      "class": "ConsentPolicyGate",
+      "file": "privacy/consent.py",
+      "bases": [],
+      "methods": 2,
+      "WMC": 8,
+      "CBO": 3,
+      "CBO_project_classes": [
+        "ConsentDenied",
+        "Decision",
+        "UserConsent"
+      ],
+      "CBO_external": [],
+      "LCOM4": 1,
+      "LCOM_norm": 0.0,
+      "DIT": 1,
+      "RFC": 10,
+      "PIM": 2,
+      "PIM_total": 2,
+      "overridden": 0
+    },
+    {
+      "class": "BasePriceCalculator",
+      "file": "pricing/calculators.py",
+      "bases": [],
+      "methods": 15,
+      "WMC": 17,
+      "CBO": 2,
+      "CBO_project_classes": [],
+      "CBO_external": [
+        "Decimal",
+        "ROUND_HALF_UP"
+      ],
+      "LCOM4": 2,
+      "LCOM_norm": 0.07,
+      "DIT": 1,
+      "RFC": 30,
+      "PIM": 14,
+      "PIM_total": 14,
+      "overridden": 0
+    },
+    {
+      "class": "RetailPriceCalculator",
+      "file": "pricing/calculators.py",
+      "bases": [],
+      "methods": 15,
+      "WMC": 20,
+      "CBO": 2,
+      "CBO_project_classes": [],
+      "CBO_external": [
+        "Decimal",
+        "ROUND_HALF_UP"
+      ],
+      "LCOM4": 2,
+      "LCOM_norm": 0.07,
+      "DIT": 1,
+      "RFC": 39,
+      "PIM": 14,
+      "PIM_total": 14,
+      "overridden": 0
+    },
+    {
+      "class": "LoyaltyPriceCalculator",
+      "file": "pricing/calculators.py",
+      "bases": [],
+      "methods": 14,
+      "WMC": 15,
+      "CBO": 2,
+      "CBO_project_classes": [],
+      "CBO_external": [
+        "Decimal",
+        "ROUND_HALF_UP"
+      ],
+      "LCOM4": 3,
+      "LCOM_norm": 0.15,
+      "DIT": 1,
+      "RFC": 37,
+      "PIM": 13,
+      "PIM_total": 13,
+      "overridden": 0
+    },
+    {
+      "class": "LookupQueries",
+      "file": "analytics/lookup_queries.py",
+      "bases": [],
+      "methods": 4,
+      "WMC": 9,
+      "CBO": 8,
+      "CBO_project_classes": [
+        "Contract",
+        "ContractProduct",
+        "Product",
+        "ProductCategory",
+        "Sale",
+        "SaleItem",
+        "Supplier"
+      ],
+      "CBO_external": [
+        "extract"
+      ],
+      "LCOM4": 1,
+      "LCOM_norm": 0.0,
+      "DIT": 1,
+      "RFC": 29,
+      "PIM": 3,
+      "PIM_total": 3,
+      "overridden": 0
+    },
+    {
+      "class": "ProcurementQueries",
+      "file": "analytics/procurement_queries.py",
+      "bases": [],
+      "methods": 3,
+      "WMC": 5,
+      "CBO": 6,
+      "CBO_project_classes": [
+        "Contract",
+        "Delivery",
+        "DeliveryItem",
+        "PeriodResolver",
+        "Supplier"
+      ],
+      "CBO_external": [
+        "func"
+      ],
+      "LCOM4": 1,
+      "LCOM_norm": 0.0,
+      "DIT": 1,
+      "RFC": 16,
+      "PIM": 2,
+      "PIM_total": 2,
+      "overridden": 0
+    },
+    {
+      "class": "EmployeeQueries",
+      "file": "analytics/employee_queries.py",
+      "bases": [],
+      "methods": 4,
+      "WMC": 10,
+      "CBO": 6,
+      "CBO_project_classes": [
+        "Department",
+        "Employee",
+        "PeriodResolver",
+        "Sale",
+        "WorkSchedule"
+      ],
+      "CBO_external": [
+        "func"
+      ],
+      "LCOM4": 1,
+      "LCOM_norm": 0.0,
+      "DIT": 1,
+      "RFC": 23,
+      "PIM": 3,
+      "PIM_total": 3,
+      "overridden": 0
+    },
+    {
+      "class": "CalendarPeriodResolver",
+      "file": "analytics/period.py",
+      "bases": [
+        "PeriodResolver"
+      ],
+      "methods": 9,
+      "WMC": 11,
+      "CBO": 6,
+      "CBO_project_classes": [
+        "PeriodResolver"
+      ],
+      "CBO_external": [
+        "Optional",
+        "Tuple",
+        "date",
+        "relativedelta",
+        "timedelta"
+      ],
+      "LCOM4": 1,
+      "LCOM_norm": 0.0,
+      "DIT": 2,
+      "RFC": 18,
+      "PIM": 3,
+      "PIM_total": 3,
+      "overridden": 3
+    },
+    {
+      "class": "PeriodResolver",
+      "file": "analytics/contracts.py",
+      "bases": [],
+      "methods": 3,
+      "WMC": 3,
+      "CBO": 5,
+      "CBO_project_classes": [],
+      "CBO_external": [
+        "ABCMeta",
+        "Optional",
+        "Tuple",
+        "abstractmethod",
+        "date"
+      ],
+      "LCOM4": 0,
+      "LCOM_norm": 0.0,
+      "DIT": 1,
+      "RFC": 3,
+      "PIM": 3,
+      "PIM_total": 3,
+      "overridden": 0
+    },
+    {
+      "class": "RevenueQueries",
+      "file": "analytics/revenue_queries.py",
+      "bases": [],
+      "methods": 3,
+      "WMC": 7,
+      "CBO": 6,
+      "CBO_project_classes": [
+        "PeriodResolver",
+        "Product",
+        "ProductCategory",
+        "Sale",
+        "SaleItem"
+      ],
+      "CBO_external": [
+        "func"
+      ],
+      "LCOM4": 1,
+      "LCOM_norm": 0.0,
+      "DIT": 1,
+      "RFC": 27,
+      "PIM": 2,
+      "PIM_total": 2,
+      "overridden": 0
+    }
+  ],
+  "focus": [
+    {
+      "class": "BasePriceCalculator",
+      "file": "pricing/calculators.py",
+      "bases": [],
+      "methods": 15,
+      "WMC": 17,
+      "CBO": 2,
+      "CBO_project_classes": [],
+      "CBO_external": [
+        "Decimal",
+        "ROUND_HALF_UP"
+      ],
+      "LCOM4": 2,
+      "LCOM_norm": 0.07,
+      "DIT": 1,
+      "RFC": 30,
+      "PIM": 14,
+      "PIM_total": 14,
+      "overridden": 0
+    },
+    {
+      "class": "RetailPriceCalculator",
+      "file": "pricing/calculators.py",
+      "bases": [],
+      "methods": 15,
+      "WMC": 20,
+      "CBO": 2,
+      "CBO_project_classes": [],
+      "CBO_external": [
+        "Decimal",
+        "ROUND_HALF_UP"
+      ],
+      "LCOM4": 2,
+      "LCOM_norm": 0.07,
+      "DIT": 1,
+      "RFC": 39,
+      "PIM": 14,
+      "PIM_total": 14,
+      "overridden": 0
+    },
+    {
+      "class": "LoyaltyPriceCalculator",
+      "file": "pricing/calculators.py",
+      "bases": [],
+      "methods": 14,
+      "WMC": 15,
+      "CBO": 2,
+      "CBO_project_classes": [],
+      "CBO_external": [
+        "Decimal",
+        "ROUND_HALF_UP"
+      ],
+      "LCOM4": 3,
+      "LCOM_norm": 0.15,
+      "DIT": 1,
+      "RFC": 37,
+      "PIM": 13,
+      "PIM_total": 13,
+      "overridden": 0
+    }
+  ]
+}

@@ -1,21 +1,18 @@
-"""Штучна трирівнева ієрархія ціноутворення для ЛР8 (Завдання 3, Baseline).
+"""Ціноутворення (ЛР8, Завдання 3, PASS): композиція замість успадкування.
 
-У проєкті немає ланцюга успадкування глибиною >= 3, тому, за приміткою методички,
-створено демонстраційну ієрархію сервісів:
+Було:  Loyalty -> Retail -> Base  (extends, DIT = 3, перевизначення методів батьків).
+Стало: три незалежні класи (DIT = 1, перевизначень немає); кожен отримує колишнього
+батька через конструктор (Dependency Injection), зберігає його як приватне поле
+і делегує йому потрібні виклики.
 
-    BasePriceCalculator            (DIT = 1)  базові правила
-      RetailPriceCalculator        (DIT = 2)  роздріб: переписує половину логіки батька
-        LoyaltyPriceCalculator     (DIT = 3)  клуб лояльності: переписує ще більше
-
-Нащадки перевизначають методи батьків і спираються на їхні внутрішні виклики
-(self.discount_amount, super().apply_discount ...), тому зміна в батьку
-каскадно ламає нижні рівні.
+Сигнатуру базового discount_amount(price, rate, currency) знає лише одне місце:
+RetailPriceCalculator.discount_amount. Зміна в Base більше не «простріляє» крізь ланцюжок.
 """
 from decimal import Decimal, ROUND_HALF_UP
 
 
 class BasePriceCalculator:
-    """Рівень 1: базові правила ціноутворення."""
+    """Базові правила ціноутворення (не успадковує нікого)."""
 
     VAT_RATE = Decimal("0.20")
     CURRENCY = "UAH"
@@ -77,12 +74,31 @@ class BasePriceCalculator:
         self._log = []
 
 
-class RetailPriceCalculator(BasePriceCalculator):
-    """Рівень 2: роздріб. Перевизначає 5 методів батька, частину логіки переписує заново."""
+class RetailPriceCalculator:
+    """Роздріб: має базовий калькулятор як приватне поле (композиція), а не наслідує його."""
 
     MIN_PRICE = Decimal("1.00")
     MAX_QUANTITY = 1000
 
+    def __init__(self, base):
+        self._base = base            # Dependency Injection
+        self._log = []
+
+    # --- делегування колишньому батькові ---
+    def net_price(self, base_price):
+        return self._base.net_price(base_price)
+
+    def discount_amount(self, price, rate):
+        # єдине місце в ланцюжку, яке знає поточну сигнатуру base.discount_amount
+        return self._base.discount_amount(price, rate, self._base.CURRENCY)
+
+    def gross_price(self, price):
+        return self._base.gross_price(price)
+
+    def discount_percent_text(self, rate):
+        return self._base.discount_percent_text(rate)
+
+    # --- власна логіка ---
     def bulk_discount_rate(self, quantity):
         if quantity >= 50:
             return Decimal("0.10")
@@ -99,7 +115,6 @@ class RetailPriceCalculator(BasePriceCalculator):
         return total + self.shipping_fee(total)
 
     def apply_discount(self, price, rate):
-        # логіку батька переписано заново (а не super): додано мінімальну ціну
         discounted = price - self.discount_amount(price, rate)
         return max(discounted, self.MIN_PRICE)
 
@@ -108,10 +123,17 @@ class RetailPriceCalculator(BasePriceCalculator):
         return (price / step).quantize(Decimal("1"), rounding=ROUND_HALF_UP) * step
 
     def validate_quantity(self, quantity):
-        super().validate_quantity(quantity)
+        self._base.validate_quantity(quantity)
         if quantity > self.MAX_QUANTITY:
             raise ValueError("Забагато одиниць в одному рядку")
         return quantity
+
+    def line_total(self, base_price, quantity, rate=0):
+        self.validate_quantity(quantity)
+        discounted = self.apply_discount(self.net_price(base_price), rate)
+        total = self.round_price(self.gross_price(discounted) * quantity)
+        self._log.append(("line_total", total))
+        return total
 
     def format_price(self, price):
         return "{:,.2f} грн".format(price).replace(",", " ")
@@ -122,16 +144,20 @@ class RetailPriceCalculator(BasePriceCalculator):
             quantity, self.format_price(self.net_price(base_price)),
             self.discount_percent_text(rate), self.format_price(total))
 
+    def history(self):
+        return list(self._log)
 
-class LoyaltyPriceCalculator(RetailPriceCalculator):
-    """Рівень 3: клуб лояльності. Перевизначає 6 методів, line_total переписано повністю."""
+
+class LoyaltyPriceCalculator:
+    """Клуб лояльності: має роздрібний калькулятор як приватне поле і делегує йому."""
 
     BOOKS_VAT_RATE = Decimal("0.07")
     LEVEL_RATES = {"silver": Decimal("0.03"), "gold": Decimal("0.07")}
 
-    def __init__(self, level="silver"):
-        super().__init__()
+    def __init__(self, retail, level="silver"):
+        self._retail = retail        # Dependency Injection
         self._level = level
+        self._log = []
 
     def member_rate(self):
         return self.LEVEL_RATES.get(self._level, Decimal("0"))
@@ -146,28 +172,41 @@ class LoyaltyPriceCalculator(RetailPriceCalculator):
         return self._level
 
     def apply_discount(self, price, rate):
-        # знову переписано: знижка клієнта додається до загальної
-        discount = self.discount_amount(price, Decimal(str(rate)) + self.member_rate())
-        return max(price - discount, self.MIN_PRICE)
+        discount = self._retail.discount_amount(price, Decimal(str(rate)) + self.member_rate())
+        return max(price - discount, self._retail.MIN_PRICE)
 
     def vat_amount(self, price):
         return price * self.BOOKS_VAT_RATE
 
-    def line_total(self, base_price, quantity, rate=0):
-        # повністю переписаний метод батька: додається автоматична оптова знижка
-        self.validate_quantity(quantity)
-        auto_rate = self.bulk_discount_rate(quantity)
-        discounted = self.apply_discount(self.net_price(base_price), Decimal(str(rate)) + auto_rate)
-        total = self.round_price(self.gross_price(discounted) * quantity)
-        self._log.append(("line_total", total))
-        return total
+    def gross_price(self, price):
+        return price + self.vat_amount(price)
 
     def round_price(self, price):
         step = Decimal("0.10")
         return (price / step).quantize(Decimal("1"), rounding=ROUND_HALF_UP) * step
 
+    def line_total(self, base_price, quantity, rate=0):
+        self._retail.validate_quantity(quantity)
+        auto_rate = self._retail.bulk_discount_rate(quantity)
+        discounted = self.apply_discount(self._retail.net_price(base_price),
+                                         Decimal(str(rate)) + auto_rate)
+        total = self.round_price(self.gross_price(discounted) * quantity)
+        self._log.append(("line_total", total))
+        return total
+
+    def order_total(self, lines):
+        """lines: [(base_price, quantity, rate)]"""
+        total = sum((self.line_total(p, q, r) for p, q, r in lines), Decimal("0"))
+        return total + self._retail.shipping_fee(total)
+
     def format_price(self, price):
-        return "%s (членам клубу)" % super().format_price(price)
+        return "%s (членам клубу)" % self._retail.format_price(price)
 
     def describe_line(self, base_price, quantity, rate=0):
-        return "[%s] %s" % (self._level, super().describe_line(base_price, quantity, rate))
+        total = self.line_total(base_price, quantity, rate)
+        return "[%s] %d шт. по %s (знижка %s) = %s" % (
+            self._level, quantity, self.format_price(self._retail.net_price(base_price)),
+            self._retail.discount_percent_text(rate), self.format_price(total))
+
+    def history(self):
+        return list(self._log)
