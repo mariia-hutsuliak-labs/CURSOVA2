@@ -257,7 +257,7 @@ class Sale(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     employee_id = db.Column(db.Integer, db.ForeignKey('employees.id'), nullable=False)
-    sale_date = db.Column(db.Date, nullable=False, default=date.today)
+    sold_on = db.Column('sale_date', db.Date, nullable=False, default=date.today)
     sale_time = db.Column(db.Time, nullable=False, default=datetime.now().time)
     total_amount = db.Column(db.Numeric(10, 2), nullable=False)
 
