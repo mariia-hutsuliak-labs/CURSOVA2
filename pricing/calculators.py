@@ -18,6 +18,7 @@ class BasePriceCalculator:
     """Рівень 1: базові правила ціноутворення."""
 
     VAT_RATE = Decimal("0.20")
+    CURRENCY = "UAH"
 
     def __init__(self):
         self._log = []
@@ -25,11 +26,14 @@ class BasePriceCalculator:
     def net_price(self, base_price):
         return Decimal(str(base_price))
 
-    def discount_amount(self, price, rate):
+    def discount_amount(self, price, rate, currency):
+        """Нова вимога: валюта обов'язкова (зміна сигнатури базового методу)."""
+        if currency != self.CURRENCY:
+            raise ValueError("Непідтримувана валюта: %s" % currency)
         return price * Decimal(str(rate))
 
     def apply_discount(self, price, rate):
-        return price - self.discount_amount(price, rate)
+        return price - self.discount_amount(price, rate, self.CURRENCY)
 
     def vat_amount(self, price):
         return price * self.VAT_RATE
