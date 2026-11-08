@@ -1,0 +1,1 @@
+{"component":{"key":"CURSOVA2:analytics/revenue_queries.py","name":"revenue_queries.py","qualifier":"FIL","path":"analytics/revenue_queries.py","language":"py","measures":[{"metric":"complexity","value":"7"},{"metric":"functions","value":"3"},{"metric":"cognitive_complexity","value":"4","bestValue":false},{"metric":"classes","value":"1"},{"metric":"ncloc","value":"47"}]}}

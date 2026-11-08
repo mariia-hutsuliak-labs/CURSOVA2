@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-ЛР8, Завдання 2: краш-тест Shotgun Surgery для God Object BookstoreQueries.
+ЛР8, Завдання 2: краш-тест запитів аналітичного шару (analytics/).
+У стані FAIL (до декомпозиції) ті самі 10 запитів викликались зі старого класу BookstoreQueries.
 
 Викликає всі 10 аналітичних запитів у контексті Flask-застосунку (реальна БД з .env)
 і друкує для кожного OK або ПОМИЛКУ. Запускати з кореня проєкту:
@@ -13,21 +14,20 @@ from datetime import date
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from app import app          # noqa: E402  (потрібен контекст застосунку і БД)
-from queries import BookstoreQueries as Q   # noqa: E402
+from app import app, analytics_services as svc   # noqa: E402  (реальна проводка застосунку і БД)
 
 # (назва, функція виклику): аргументи за замовчуванням, щоб кожен запит відпрацював
 CASES = [
-    ("query_1_employees_info", lambda: Q.query_1_employees_info()),
-    ("query_2_revenue_analysis", lambda: Q.query_2_revenue_analysis()),
-    ("query_3_contracts_by_period", lambda: Q.query_3_contracts_by_period("month")),
-    ("query_4_suppliers_without_board_games", lambda: Q.query_4_suppliers_without_board_games()),
-    ("query_5_top_sellers", lambda: Q.query_5_top_sellers()),
-    ("query_6_sales_info", lambda: Q.query_6_sales_info(target_date=date.today())),
-    ("query_7_employee_count", lambda: Q.query_7_employee_count()),
-    ("query_8_supplier_by_contract", lambda: Q.query_8_supplier_by_contract("0")),
-    ("query_9_supplier_product_value", lambda: Q.query_9_supplier_product_value("x")),
-    ("query_10_weekly_sales_analysis", lambda: Q.query_10_weekly_sales_analysis()),
+    ("query_1_employees_info", lambda: svc.employees.query_1_employees_info()),
+    ("query_2_revenue_analysis", lambda: svc.revenue.query_2_revenue_analysis()),
+    ("query_3_contracts_by_period", lambda: svc.procurement.query_3_contracts_by_period("month")),
+    ("query_4_suppliers_without_board_games", lambda: svc.lookup.query_4_suppliers_without_board_games()),
+    ("query_5_top_sellers", lambda: svc.employees.query_5_top_sellers()),
+    ("query_6_sales_info", lambda: svc.lookup.query_6_sales_info(target_date=date.today())),
+    ("query_7_employee_count", lambda: svc.employees.query_7_employee_count()),
+    ("query_8_supplier_by_contract", lambda: svc.lookup.query_8_supplier_by_contract("0")),
+    ("query_9_supplier_product_value", lambda: svc.procurement.query_9_supplier_product_value("x")),
+    ("query_10_weekly_sales_analysis", lambda: svc.revenue.query_10_weekly_sales_analysis()),
 ]
 
 

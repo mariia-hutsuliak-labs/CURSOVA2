@@ -174,9 +174,21 @@ def _link_methods(ms, attrs, ds):
             ds.union(a.name, other)
 
 
+def is_interface(ci):
+    """Інтерфейс: усі методи абстрактні (@abstractmethod). Стану в нього немає,
+    тож згуртованість через спільні поля для нього не визначена."""
+    if not ci.methods:
+        return False
+    return all(any("abstractmethod" in ast.unparse(d) for d in m.decorator_list)
+               for m in ci.methods)
+
+
 def lcom4(ci):
     """LCOM4: кількість компонентів зв'язності графа методів + нормована форма
-    (comps - 1) / (methods - 1), де 0 = ідеальна згуртованість, 1 = повна розрізненість."""
+    (comps - 1) / (methods - 1), де 0 = ідеальна згуртованість, 1 = повна розрізненість.
+    Для інтерфейсів повертає (0, 0.0)."""
+    if is_interface(ci):
+        return 0, 0.0
     ms = [m for m in ci.methods if not is_dunder(m.name) or m.name == "__init__"]
     if not ms:
         return 0, 0.0
@@ -370,7 +382,7 @@ def file_summary(rows):
     return files
 
 
-def analyse(root, label):
+def analyse(root, label, focus=None):
     classes, modules = collect(root)
     by_name = {c.name: c for c in classes}
     rows, coupling = [], {}
@@ -379,8 +391,22 @@ def analyse(root, label):
         rows.append(m)
         base_names = {b.split(".")[-1] for b in ci.bases}   # COF без успадкування
         coupling[ci.name] = {x for x in proj if x not in base_names}
-    return {"label": label, "mood": mood(classes, coupling),
-            "files": file_summary(rows), "classes": rows}
+    result = {"label": label, "mood": mood(classes, coupling),
+              "files": file_summary(rows), "classes": rows}
+    if focus:
+        result["focus"] = [r for r in rows if r["file"].startswith(focus)]
+    return result
+
+
+def print_focus(focus):
+    if not focus:
+        return
+    hdr = "%-24s %4s %4s %4s %6s %5s %4s %4s"
+    print("\nФокус (--focus):")
+    print(hdr % ("class", "met", "WMC", "CBO", "LCOM4", "LCOMn", "DIT", "PIM"))
+    for r in sorted(focus, key=lambda r: -r["CBO"]):
+        print(hdr % (r["class"][:24], r["methods"], r["WMC"], r["CBO"],
+                     r["LCOM4"], r["LCOM_norm"], r["DIT"], r["PIM"]))
 
 
 def print_report(result):
@@ -392,6 +418,7 @@ def print_report(result):
     print("\nПо файлах ЛР6:")
     for path, v in result["files"].items():
         print(" ", path, json.dumps(v, ensure_ascii=False))
+    print_focus(result.get("focus"))
     print("\nMOOD:", json.dumps(result["mood"], ensure_ascii=False))
 
 
@@ -400,9 +427,11 @@ def main():
     ap.add_argument("label", help="baseline | failed | fixed ...")
     ap.add_argument("--root", default=".")
     ap.add_argument("--out", default="reports/lab8")
+    ap.add_argument("--focus", default=None,
+                    help="префікс шляху (наприклад analytics): окрема таблиця цих класів")
     args = ap.parse_args()
 
-    result = analyse(args.root, args.label)
+    result = analyse(args.root, args.label, args.focus)
     os.makedirs(args.out, exist_ok=True)
     out = os.path.join(args.out, "ck_mood_%s.json" % args.label)
     with open(out, "w", encoding="utf-8") as f:

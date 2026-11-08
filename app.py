@@ -1,7 +1,7 @@
 from decimal import Decimal
 from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
 from models import db, Employee, Department, Supplier, Contract, Product, ProductCategory, Sale, SaleItem, WorkSchedule, Delivery, DeliveryItem, ContractProduct, User, UserRequest
-from queries import BookstoreQueries
+from analytics import build_analytics
 from sale_values import SaleOrder
 from datetime import datetime, date, timedelta, timezone
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
@@ -36,6 +36,7 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
 configure_secure_logging(app)
 
 db.init_app(app)
+analytics_services = build_analytics(db.session)   # Lab 8: замість монолітного класу запитів (God Object)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -391,7 +392,7 @@ def delete_product(product_id):
 @app.route('/sales')
 @requires_authorized_or_above
 def sales():
-    sales = Sale.query.order_by(Sale.sale_date.desc()).limit(50).all()
+    sales = Sale.query.order_by(Sale.sold_on.desc()).limit(50).all()
     today = date.today()
     return render_template('sales.html', sales=sales, today=today)
 
@@ -415,7 +416,7 @@ def create_pending_sale(employee_id):
     """Допоміжна функція: створює новий запис продажу (без товарів) і повертає його."""
     sale = Sale(
         employee_id=employee_id,
-        sale_date=date.today(),
+        sold_on=date.today(),
         sale_time=datetime.now().time(),
         total_amount=0
     )
@@ -1129,7 +1130,7 @@ def api_query1():
     managers_only = request.args.get('managers_only', 'false').lower() == 'true'
     on_vacation_only = request.args.get('on_vacation_only', 'false').lower() == 'true'
 
-    employees = BookstoreQueries.query_1_employees_info(
+    employees = analytics_services.employees.query_1_employees_info(
         department_name=department_name,
         managers_only=managers_only,
         on_vacation_only=on_vacation_only
@@ -1169,7 +1170,7 @@ def api_query2():
     end_date = parse_date(request.args.get('end_date'))
     category = request.args.get('category')
 
-    revenue = BookstoreQueries.query_2_revenue_analysis(
+    revenue = analytics_services.revenue.query_2_revenue_analysis(
         start_date=start_date,
         end_date=end_date,
         category_name=category
@@ -1196,7 +1197,7 @@ def api_query2():
 def api_query3():
     period = request.args.get('period', 'month')
 
-    contracts = BookstoreQueries.query_3_contracts_by_period(period_type=period)
+    contracts = analytics_services.procurement.query_3_contracts_by_period(period_type=period)
 
     result = []
     for contract in contracts:
@@ -1221,7 +1222,7 @@ def api_query3():
 @app.route('/api/query4')
 @requires_authorized_or_above
 def api_query4():
-    suppliers = BookstoreQueries.query_4_suppliers_without_board_games()
+    suppliers = analytics_services.lookup.query_4_suppliers_without_board_games()
 
     result = []
     for supplier in suppliers:
@@ -1251,7 +1252,7 @@ def api_query5():
     period = request.args.get('period')
     target_date = parse_date(request.args.get('target_date'))
 
-    sellers = BookstoreQueries.query_5_top_sellers(
+    sellers = analytics_services.employees.query_5_top_sellers(
         min_amount=float(min_amount),
         period_type=period,
         target_date=target_date
@@ -1297,7 +1298,7 @@ def api_query6():
     @retry_with_backoff(max_attempts=3, base_delay_seconds=0.3)
     def fetch_query6_data():
         maybe_inject_fault()
-        return BookstoreQueries.query_6_sales_info(
+        return analytics_services.lookup.query_6_sales_info(
             target_date=target_date,
             month=month,
             category_name=category_name,
@@ -1325,7 +1326,7 @@ def api_query6():
     for sale, sale_item, product, category in sales_info:
         result.append({
             'sale_id': sale.id,
-            'sale_date': sale.sale_date.strftime('%Y-%m-%d'),
+            'sale_date': sale.sold_on.strftime('%Y-%m-%d'),
             'sale_time': sale.sale_time.strftime('%H:%M:%S'),
             'employee': sale.employee.full_name,
             'product_name': product.name,
@@ -1363,7 +1364,7 @@ def api_query7():
     department_name = request.args.get('department')
     target_date = parse_date(raw_date) if raw_date else None
 
-    result = BookstoreQueries.query_7_employee_count(
+    result = analytics_services.employees.query_7_employee_count(
         target_date=target_date,
         department_name=department_name
     )
@@ -1404,7 +1405,7 @@ def api_query8():
     if not contract_number:
         return jsonify({'error': 'Contract number is required'}), 400
 
-    result = BookstoreQueries.query_8_supplier_by_contract(contract_number)
+    result = analytics_services.lookup.query_8_supplier_by_contract(contract_number)
 
     if not result:
         add_history_entry(
@@ -1448,7 +1449,7 @@ def api_query9():
     supplier_name = request.args.get('supplier_name')
     target_date = parse_date(request.args.get('target_date'))
 
-    total_value = BookstoreQueries.query_9_supplier_product_value(
+    total_value = analytics_services.procurement.query_9_supplier_product_value(
         supplier_name=supplier_name,
         target_date=target_date
     )
@@ -1475,7 +1476,7 @@ def api_query10():
     if not from_date:
         from_date = date.today()
 
-    result = BookstoreQueries.query_10_weekly_sales_analysis(from_date=from_date)
+    result = analytics_services.revenue.query_10_weekly_sales_analysis(from_date=from_date)
 
     categories = []
     for cat_name, cat_sales in result['by_category']:

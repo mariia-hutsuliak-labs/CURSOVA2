@@ -48,7 +48,7 @@ def run():
             from models import Sale, SaleItem
             new_sale = Sale(
                 employee_id=employee.id,
-                sale_date=sale_date,
+                sold_on=sale_date,
                 sale_time=sale_time,
                 total_amount=0
             )

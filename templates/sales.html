@@ -38,7 +38,7 @@
                             {% for sale in sales %}
                             <tr>
                                 <td>{{ sale.id }}</td>
-                                <td>{{ sale.sale_date.strftime('%d.%m.%Y') }}</td>
+                                <td>{{ sale.sold_on.strftime('%d.%m.%Y') }}</td>
                                 <td>{{ sale.sale_time.strftime('%H:%M') }}</td>
                                 <td>{{ sale.employee.full_name }}</td>
                                 <td>{{ sale.employee.department.name }}</td>
@@ -77,7 +77,7 @@
                 <h5 class="mb-0">Статистика за сьогодні</h5>
             </div>
             <div class="card-body">
-                {% set today_sales = sales|selectattr('sale_date', 'equalto', today)|list %}
+                {% set today_sales = sales|selectattr('sold_on', 'equalto', today)|list %}
                 {% set today_total = today_sales|sum(attribute='total_amount') %}
                 {% set today_count = today_sales|length %}
                 <div class="row text-center">

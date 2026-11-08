@@ -3,6 +3,35 @@ from models import *
 from datetime import datetime, date, time, timedelta
 from decimal import Decimal
 
+def _seed_sales(sales_data):
+    """Продажі з позиціями. Дата продажу: атрибут моделі sold_on (колонка sale_date у БД)."""
+    for sale_date, employee_id, items in sales_data:
+        total_amount = sum(quantity * price for _, quantity, price in items)
+        sale = Sale(employee_id=employee_id, sold_on=sale_date,
+                    sale_time=time(14, 30), total_amount=total_amount)
+        db.session.add(sale)
+        db.session.flush()
+
+        for product_id, quantity, unit_price in items:
+            db.session.add(SaleItem(sale_id=sale.id, product_id=product_id,
+                                    quantity=quantity, unit_price=unit_price,
+                                    total_price=quantity * unit_price))
+
+
+def _seed_deliveries(deliveries_data):
+    for delivery_date, contract_id, items in deliveries_data:
+        total_amount = sum(quantity * price for _, quantity, price in items)
+        delivery = Delivery(contract_id=contract_id, delivery_date=delivery_date,
+                            total_amount=total_amount)
+        db.session.add(delivery)
+        db.session.flush()
+
+        for product_id, quantity, unit_price in items:
+            db.session.add(DeliveryItem(delivery_id=delivery.id, product_id=product_id,
+                                        quantity=quantity, unit_price=unit_price,
+                                        total_price=quantity * unit_price))
+
+
 def init_database():
     with app.app_context():
 
@@ -251,18 +280,7 @@ def init_database():
             (today - timedelta(days=2), 4, [(3, 2, Decimal("280.00")), (5, 1, Decimal("380.00"))]),
         ]
         
-        for sale_date, employee_id, items in sales_data:
-            total_amount = sum(quantity * price for _, quantity, price in items)
-            sale = Sale(employee_id=employee_id, sale_date=sale_date, 
-                       sale_time=time(14, 30), total_amount=total_amount)
-            db.session.add(sale)
-            db.session.flush()
-            
-            for product_id, quantity, unit_price in items:
-                sale_item = SaleItem(sale_id=sale.id, product_id=product_id, 
-                                   quantity=quantity, unit_price=unit_price, 
-                                   total_price=quantity * unit_price)
-                db.session.add(sale_item)
+        _seed_sales(sales_data)
         
         db.session.commit()
 
@@ -274,18 +292,7 @@ def init_database():
             (date(2025, 8, 22), 5, [(7, 24, Decimal("35.00")), (9, 30, Decimal("120.00"))])
         ]
         
-        for delivery_date, contract_id, items in deliveries_data:
-            total_amount = sum(quantity * price for _, quantity, price in items)
-            delivery = Delivery(contract_id=contract_id, delivery_date=delivery_date, 
-                              total_amount=total_amount)
-            db.session.add(delivery)
-            db.session.flush()
-            
-            for product_id, quantity, unit_price in items:
-                delivery_item = DeliveryItem(delivery_id=delivery.id, product_id=product_id, 
-                                           quantity=quantity, unit_price=unit_price, 
-                                           total_price=quantity * unit_price)
-                db.session.add(delivery_item)
+        _seed_deliveries(deliveries_data)
         
         db.session.commit()
         

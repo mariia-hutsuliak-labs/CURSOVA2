@@ -1,0 +1,1 @@
+{"component":{"key":"CURSOVA2:analytics/period.py","name":"period.py","qualifier":"FIL","path":"analytics/period.py","language":"py","measures":[{"metric":"complexity","value":"11"},{"metric":"functions","value":"9"},{"metric":"cognitive_complexity","value":"2","bestValue":false},{"metric":"classes","value":"1"},{"metric":"ncloc","value":"37"}]}}
