@@ -10,28 +10,29 @@
 
 ## 2. C4-діаграма контейнерів (C4 Container Diagram)
 
-C4 (Context, Containers, Components, Code) описує систему на рівнях деталізації. Нижче рівень контейнерів: окремі процеси та сховища, які розгортаються окремо.
+C4 (Context, Containers, Components, Code) описує систему на рівнях деталізації. Нижче рівень контейнерів: окремі процеси та сховища, які розгортаються окремо. Діаграма намальована звичайною flowchart-розкладкою Mermaid у позначеннях C4 (Person, Container, ContainerDb, межа системи), бо нативний синтаксис `C4Container` не дає керувати розкладкою і накладає підписи.
 
 ```mermaid
-C4Container
-    title CURSOVA2: діаграма контейнерів
+flowchart LR
+    user(["<b>Користувач</b><br/>[Person]<br/>guest, authorized_user,<br/>operator, administrator"])
 
-    Person(user, "Користувач", "guest / authorized_user / operator / administrator")
+    subgraph sys["CURSOVA2 [System boundary]"]
+        direction LR
+        web["<b>Flask Web App</b><br/>[Container]<br/>Python 3.9, Flask 2.3<br/>Сторінки Jinja2 і JSON API,<br/>ролі, бізнес-логіка"]
+        db[("<b>PostgreSQL</b><br/>[Container]<br/>Бізнес-дані,<br/>користувачі, згоди,<br/>аудит")]
+        hist[("<b>Історія запитів</b><br/>[Container]<br/>JSON-файли history/<br/>Журнал запитів<br/>користувача")]
+        logs["<b>Журнал</b><br/>[Container]<br/>stderr, LOG_FILE<br/>Логи без персональних<br/>даних і секретів"]
+    end
 
-    System_Boundary(sys, "CURSOVA2") {
-        Container(web, "Flask Web App", "Python 3.9, Flask 2.3", "HTML-сторінки (Jinja2) та JSON API; автентифікація, ролі, бізнес-логіка")
-        ContainerDb(db, "PostgreSQL", "PostgreSQL", "Бізнес-дані, користувачі, згоди, аудит приватності")
-        ContainerDb(hist, "Історія запитів", "JSON-файли history/user_<id>.json", "Журнал аналітичних запитів кожного користувача")
-        Container(logs, "Журнал застосунку", "stderr + опційний LOG_FILE", "Логи з маскуванням персональних даних і секретів")
-    }
+    user -- "HTTP, браузер" --> web
+    web -- "SQLAlchemy" --> db
+    web -- "файловий I/O" --> hist
+    web -- "logging" --> logs
 
-    System_Ext(ci, "GitHub Actions", "Конвеєр complexity.yml: Radon + churn + hotspot-матриця")
-
-    Rel(user, web, "Працює через браузер", "HTTP")
-    Rel(web, db, "Читає і пише", "SQLAlchemy, psycopg2")
-    Rel(web, hist, "Додає записи історії", "файловий I/O з блокуванням")
-    Rel(web, logs, "Пише журнал", "logging")
-    Rel(ci, web, "Аналізує вихідний код (не запускає)", "git checkout")
+    classDef person fill:#08427b,stroke:#052e56,color:#fff
+    classDef container fill:#438dd5,stroke:#2e6295,color:#fff
+    class user person
+    class web,db,hist,logs container
 ```
 
 ## 3. Компоненти Flask-застосунку
@@ -39,14 +40,14 @@ C4Container
 ```mermaid
 flowchart LR
     subgraph Web["Flask Web App"]
-        A["app.py<br/>маршрути, ролі, шаблони"]
-        I["inventory_alerts.py<br/>низькі залишки товарів"]
-        Q["analytics/*<br/>build_analytics: employees, revenue, lookup, procurement<br/>PeriodResolver (period.py)"]
-        PR["pricing/*<br/>демо-шар ціноутворення (ЛР8)"]
-        S["sale_values.py<br/>SaleOrder (Value Objects)"]
+        A["app.py<br/>маршрути, ролі,<br/>шаблони"]
+        I["inventory_alerts.py<br/>низькі залишки"]
+        Q["analytics/*<br/>build_analytics,<br/>PeriodResolver"]
+        PR["pricing/*<br/>демо-ціноутворення<br/>(ЛР8)"]
+        S["sale_values.py<br/>SaleOrder<br/>(Value Objects)"]
         H["history_utils.py<br/>історія запитів"]
-        R["resilience.py + fault_injection.py<br/>retry / fallback / імітація збоїв"]
-        P["privacy/*<br/>consent, export, erasure, audit, secure_logging"]
+        R["resilience.py,<br/>fault_injection.py<br/>retry, fallback"]
+        P["privacy/*<br/>consent, export,<br/>erasure, audit,<br/>secure_logging"]
         M["models.py<br/>ORM-моделі"]
     end
     A --> Q
