@@ -40,6 +40,7 @@ C4Container
 flowchart LR
     subgraph Web["Flask Web App"]
         A["app.py<br/>маршрути, ролі, шаблони"]
+        I["inventory_alerts.py<br/>низькі залишки товарів"]
         Q["analytics/*<br/>build_analytics: employees, revenue, lookup, procurement<br/>PeriodResolver (period.py)"]
         PR["pricing/*<br/>демо-шар ціноутворення (ЛР8)"]
         S["sale_values.py<br/>SaleOrder (Value Objects)"]
@@ -49,6 +50,8 @@ flowchart LR
         M["models.py<br/>ORM-моделі"]
     end
     A --> Q
+    A --> I
+    I --> M
     A --> S
     A --> H
     A --> R
@@ -63,6 +66,7 @@ flowchart LR
 |---|---|---|---|
 | `app.py` | маршрути, декоратори ролей (`requires_role`), робота зі сторінками й JSON API, ініціалізація Flask | `models.py`, `analytics/`, `sale_values.py`, `history_utils.py`, `resilience.py`, `privacy/*` | [isd.md §2](isd.md) |
 | `models.py` | ORM-моделі (SQLAlchemy) усіх бізнес-таблиць і користувачів | PostgreSQL | [isd.md §4](isd.md) |
+| `inventory_alerts.py` | пошук товарів із залишком не більше порога `LOW_STOCK_THRESHOLD`; перевірка конфігурації при старті (`validate_config`, fail-fast) | `models.py` (таблиця `products`), викликається з `app.py` | [isd.md §3](isd.md) |
 | `analytics/` | аналітичний шар (ЛР8, замість колишнього God Object `queries.py`): `build_analytics(session)` у `__init__.py` є composition root і повертає чотири сервіси: `EmployeeQueries` (запити 1, 5, 7), `RevenueQueries` (2, 10), `ProcurementQueries` (3, 9), `LookupQueries` (4, 6, 8). Календарну логіку періодів ізольовано за інтерфейсом `PeriodResolver` (`contracts.py`) з реалізацією `CalendarPeriodResolver` (`period.py`) | `models.py`, `app.py` викликає через `analytics_services` | [isd.md §2](isd.md) |
 | `pricing/` | демонстраційний шар ціноутворення (ЛР8): `BasePriceCalculator`, `RetailPriceCalculator`, `LoyaltyPriceCalculator` з композицією замість успадкування; `app.py` його не імпортує, використовується тестами і скриптом `scripts/lab8_inheritance_test.py` | сам по собі, залежностей від `models.py` немає | [isd.md §2](isd.md) |
 | `sale_values.py` | незмінні Value Objects для розрахунку суми продажу (результат рефакторингу ЛР6) | використовується з `app.py` | [isd.md §2](isd.md) |
@@ -117,6 +121,7 @@ erDiagram
 | `/api/query8` | GET | A | Постачальник за номером договору | `analytics/lookup_queries.py` |
 | `/api/query9` | GET | A | Вартість товарів постачальника на дату (`supplier_name`, `target_date`) | `analytics/procurement_queries.py`, `history_utils.py` |
 | `/api/query10` | GET | A | Тижневий аналіз продажів (`from_date`) | `analytics/revenue_queries.py`, `history_utils.py` |
+| `/api/inventory/low-stock` | GET | O | Товари із залишком <= `LOW_STOCK_THRESHOLD`: `{threshold, count, items[{id, name, stock_quantity}]}` | `inventory_alerts.py` |
 | `/api/custom-sql` | POST | O | Довільний SELECT (заблоковані drop/delete/alter/truncate/update) | PostgreSQL напряму |
 | `/api/users/<int:user_id>/personal-data` | GET | власник даних або адміністратор | Експорт персональних даних (право доступу) | `privacy/export.py` |
 | `/api/users/<int:user_id>/anonymize` | POST | власник даних або адміністратор | Анонімізація, тіло `{"confirm": true}` | `privacy/erasure.py` |

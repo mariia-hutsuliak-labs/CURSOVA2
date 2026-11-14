@@ -14,7 +14,7 @@
 |---|---|---|
 | PostgreSQL | локальний сервер або окремий контейнер | 1 (до застосунку) |
 | `init_db.py` | одноразово, створює таблиці й початкових користувачів | 2 |
-| Flask Web App (`app.py`, `models.py`, `analytics/`, `sale_values.py`, `resilience.py`, `privacy/*`, `templates/`) | `python app.py` | 3 |
+| Flask Web App (`app.py`, `models.py`, `analytics/`, `sale_values.py`, `inventory_alerts.py`, `resilience.py`, `privacy/*`, `templates/`) | `python app.py`. Перший крок старту: `validate_config()` перевіряє `LOW_STOCK_THRESHOLD` ще до підключення до БД; при помилці процес завершується | 3 |
 | Історія запитів (`history_utils.py`) | каталог `history/` у корені проєкту, створюється застосунком | разом із застосунком |
 | Журнал (`privacy/secure_logging.py`) | stderr, за потреби файл `LOG_FILE` | разом із застосунком |
 
@@ -34,6 +34,7 @@
 | `SECRET_KEY` | так | немає | ключ підпису сесій Flask | `app.py` |
 | `DATABASE_URL` | так | немає | рядок підключення SQLAlchemy до PostgreSQL | `app.py` |
 | `POOL_RECYCLE` | ні | `300` | час (с) переробки з'єднань пулу | `app.py` |
+| `LOW_STOCK_THRESHOLD` | ні | `5` | поріг низького залишку товару; має бути цілим числом >= 0, інакше застосунок не стартує (fail-fast) | `inventory_alerts.py` (перевірка при імпорті `app.py`) |
 | `DEMO_API_TOKEN` | ні | порожньо | токен демо-скрипта виявлення секретів (ЛР3) | `secrets_trap_demo.py` |
 | `DB_FAULT_MODE` | ні | `none` | імітація збою БД: `none`, `error`, `timeout` (ЛР2) | `fault_injection.py` |
 | `LOG_FORMAT` | ні | `text` | формат логів: `text` або `json` | `privacy/secure_logging.py` |
