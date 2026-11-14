@@ -9,6 +9,7 @@ from flask_moment import Moment
 from functools import wraps
 from history_utils import add_history_entry, load_history
 from fault_injection import maybe_inject_fault
+from inventory_alerts import validate_config, find_low_stock_products
 from resilience import retry_with_backoff, DependencyUnavailableError
 from privacy.secure_logging import configure_secure_logging, log_security_event
 from privacy.export import personal_data_response
@@ -22,6 +23,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 logger = logging.getLogger(__name__)
+
+LOW_STOCK_THRESHOLD = validate_config()  # fail-fast: некоректна конфігурація зупиняє запуск до підключення до БД
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
@@ -1537,6 +1540,20 @@ def api_marketing_email(user_id):
 def api_analytics_event(user_id):
     """Залежна дія: необов'язкова аналітика проходить через Consent Policy Gate."""
     return analytics_event_response(current_user, user_id)
+
+
+@app.route('/api/inventory/low-stock')
+@requires_operator_or_admin
+def api_low_stock():
+    products = find_low_stock_products(LOW_STOCK_THRESHOLD)
+    return jsonify({
+        'threshold': LOW_STOCK_THRESHOLD,
+        'count': len(products),
+        'items': [
+            {'id': p.id, 'name': p.name, 'stock_quantity': p.stock_quantity}
+            for p in products
+        ]
+    })
 
 
 @app.route('/my_history')
