@@ -9,7 +9,7 @@ set -uo pipefail
 
 BASE="${BASE:-http://127.0.0.1:5000}"
 OUT="reports/incident"
-LOG="$OUT/INC-001-timeline.log"
+LOG="${LOG:-$OUT/INC-001-timeline.log}"
 JAR="$(mktemp)"
 mkdir -p "$OUT"
 : > "$LOG"
@@ -48,12 +48,19 @@ for i in $(seq 1 10); do
 done
 log "IMPACT за вікно інциденту: запитів $TOTAL, з помилкою $FAILED (частка помилок $((100*FAILED/TOTAL))%)"
 
-MOVED="$OUT/user_corrupt_$(date -u +%Y%m%dT%H%M%SZ).json"
-mv "$VICTIM" "$MOVED"
-log "MITIGATE тимчасовий обхід: пошкоджений файл прибрано в $MOVED (історія користувача скидається, звіти працюють)"
-
-A1=$(code /api/query6); A2=$(code /my_history)
-log "STABILIZED GET /api/query6 -> $A1; GET /my_history -> $A2"
+if [ "$FAILED" -eq 0 ]; then
+  QUARANTINED="$(ls "$VICTIM".corrupt-* 2>/dev/null | tail -1)"
+  log "PASS самовідновлення: помилок немає, пошкоджений файл автоматично перенесено в ${QUARANTINED:-<не знайдено>} (CAPA-1, CAPA-2)"
+  A1=$(code /api/query6); A2=$(code /my_history)
+  log "STABILIZED GET /api/query6 -> $A1; GET /my_history -> $A2 (ручний обхід не знадобився)"
+  [ -n "$QUARANTINED" ] && mv "$QUARANTINED" "$OUT/user_quarantined_$(date -u +%Y%m%dT%H%M%SZ).json"
+else
+  MOVED="$OUT/user_corrupt_$(date -u +%Y%m%dT%H%M%SZ).json"
+  mv "$VICTIM" "$MOVED"
+  log "MITIGATE тимчасовий обхід: пошкоджений файл прибрано в $MOVED (історія користувача скидається, звіти працюють)"
+  A1=$(code /api/query6); A2=$(code /my_history)
+  log "STABILIZED GET /api/query6 -> $A1; GET /my_history -> $A2"
+fi
 
 cp "$OUT/history_backup_before_incident.json" "$VICTIM"
 log "CLEANUP файл історії повернуто з резервної копії; симуляцію завершено"

@@ -111,12 +111,9 @@ def _anonymize_requests(original_email: str) -> int:
 
 
 def _delete_history_file(user_id: int) -> bool:
-    from history_utils import history_file
+    from history_utils import delete_history_files
 
-    path = history_file(user_id)
-    existed = path.exists()
-    path.unlink(missing_ok=True)
-    return existed
+    return delete_history_files(user_id)
 
 
 def anonymize_user(subject_id: int, actor_id: Optional[int],

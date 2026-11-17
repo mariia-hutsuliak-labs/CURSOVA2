@@ -1,0 +1,9 @@
+2026-11-17T21:19:51Z PREFLIGHT застосунок доступний? GET /login -> 200
+2026-11-17T21:19:51Z BASELINE login як operator виконано
+2026-11-17T21:19:51Z BASELINE GET /api/query6 -> 200; GET /my_history -> 200 (очікується 200 і 200)
+2026-11-17T21:19:51Z PREPARE файл історії оператора: history/user_2.json (резервна копія в reports/incident/history_backup_before_incident.json)
+2026-11-17T21:19:51Z INJECT файл history/user_2.json обрізано посеред JSON (імітація збою під час запису, TD-2)
+2026-11-17T21:20:02Z IMPACT за вікно інциденту: запитів 20, з помилкою 0 (частка помилок 0%)
+2026-11-17T21:20:02Z PASS самовідновлення: помилок немає, пошкоджений файл автоматично перенесено в history/user_2.json.corrupt-20261117T211951Z (CAPA-1, CAPA-2)
+2026-11-17T21:20:03Z STABILIZED GET /api/query6 -> 200; GET /my_history -> 200 (ручний обхід не знадобився)
+2026-11-17T21:20:03Z CLEANUP файл історії повернуто з резервної копії; симуляцію завершено

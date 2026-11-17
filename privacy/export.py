@@ -106,7 +106,7 @@ def _collect_settings() -> dict:
 
 
 def _collect_activity(user, warnings: list) -> dict:
-    from history_utils import load_history
+    from history_utils import load_history, quarantined_history_files
 
     entries, seen = [], set()
 
@@ -129,10 +129,12 @@ def _collect_activity(user, warnings: list) -> dict:
     for raw in (user.api_history or []):
         add(raw, "users.api_history")
     try:
-        for raw in load_history(user.id):
+        for raw in load_history(user.id, strict=True):
             add(raw, f"history/user_{user.id}.json")
     except Exception:                        # пошкоджений файл не повинен мовчки зникати
         warnings.append(f"history/user_{user.id}.json is unreadable; activity may be incomplete")
+    if quarantined_history_files(user.id):   # файл уже перенесено в карантин самовідновленням
+        warnings.append(f"history/user_{user.id}.json was quarantined as corrupt; activity may be incomplete")
 
     entries.sort(key=lambda e: (str(e["timestamp"]), str(e["api"])))
     return _section(["users.api_history", f"history/user_{user.id}.json"],
