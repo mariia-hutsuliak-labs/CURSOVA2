@@ -17,7 +17,7 @@
 Потрібно: Python 3.9 (версія середовища проєкту, див. `docs/architecture/isd.md`), PostgreSQL, Git.
 
 ```bash
-git clone https://github.com/MariiaHutsuliak/CURSOVA2.git
+git clone https://github.com/mariia-hutsuliak-labs/CURSOVA2.git
 cd CURSOVA2
 python3 -m venv .venv
 source .venv/bin/activate            # Windows: .venv\Scripts\activate

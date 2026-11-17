@@ -1,7 +1,7 @@
 site_name: CURSOVA2 — база знань
 site_description: Документація інформаційної системи книгарні (Documentation as Code)
-site_url: https://mariiahutsuliak.github.io/CURSOVA2/
-repo_url: https://github.com/MariiaHutsuliak/CURSOVA2
+site_url: https://mariia-hutsuliak-labs.github.io/CURSOVA2/
+repo_url: https://github.com/mariia-hutsuliak-labs/CURSOVA2
 edit_uri: edit/main/docs/
 
 theme:

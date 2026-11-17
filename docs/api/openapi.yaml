@@ -11,7 +11,7 @@ info:
     Версія контракту веде SemVer: зміна формату відповіді = нова мажорна версія.
   contact:
     name: Mariia Hutsuliak
-    url: https://github.com/MariiaHutsuliak/CURSOVA2
+    url: https://github.com/mariia-hutsuliak-labs/CURSOVA2
 servers:
   - url: http://127.0.0.1:5000
     description: Локальний сервер розробки (python app.py)

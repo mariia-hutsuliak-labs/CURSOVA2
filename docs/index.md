@@ -11,7 +11,7 @@ tags: [architecture, api, ops]
 
 | Рівень | Питання | Розділ |
 |---|---|---|
-| 1 | Що це і як запустити? | [README у репозиторії](https://github.com/MariiaHutsuliak/CURSOVA2#readme) |
+| 1 | Що це і як запустити? | [README у репозиторії](https://github.com/mariia-hutsuliak-labs/CURSOVA2#readme) |
 | 2 | Як приєднатися до розробки? | [Для розробників](developer/CONTRIBUTING.md) |
 | 3 | Як інтегруватися? | [API](api/index.md) |
 | 4 | Чому система влаштована саме так? | [SDD](architecture/sdd.md), [ISD](architecture/isd.md), [ADR](architecture/adr/0001-postgresql-as-primary-store.md) |
