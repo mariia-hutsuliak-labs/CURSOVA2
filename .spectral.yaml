@@ -1,0 +1,34 @@
+# Мінімальний набір правил якості API-контракту (ЛР11, Завдання 2).
+# Базовий набір spectral:oas перевіряє валідність за стандартом OpenAPI,
+# власні правила нижче додають вимоги лабораторної.
+extends: ["spectral:oas"]
+
+rules:
+  # Кожна операція має непорожній description (за замовчуванням лише попередження).
+  operation-description: error
+
+  # Кожна схема в components.schemas має хоча б один example.
+  schema-must-have-example:
+    description: Кожна схема в components.schemas повинна мати example.
+    severity: error
+    given: "$.components.schemas[*]"
+    then:
+      field: example
+      function: truthy
+
+  # Усі JSON-помилки 4xx мають єдину форму Error: обов'язкове поле error.
+  error-responses-use-shared-schema:
+    description: Відповіді 4xx повинні використовувати спільну схему Error з обов'язковим полем error.
+    severity: error
+    given: "$.paths[*][*].responses[?(@property.match(/^4/))].content['application/json'].schema"
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          type: object
+          required: [required, properties]
+          properties:
+            required:
+              type: array
+              contains:
+                const: error
