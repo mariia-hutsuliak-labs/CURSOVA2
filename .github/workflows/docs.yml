@@ -1,0 +1,94 @@
+# Конвеєр документації (Documentation as Code): «не збирається — не їде».
+# Стадії: checkout -> Python -> залежності -> markdownlint -> strict-збірка -> деплой на GitHub Pages.
+name: Docs
+
+on:
+  push:
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
+      - "requirements-docs.txt"
+      - "README.md"
+      - ".markdownlint-cli2.yaml"
+      - ".github/workflows/docs.yml"
+  pull_request:
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
+      - "requirements-docs.txt"
+      - "README.md"
+      - ".markdownlint-cli2.yaml"
+      - ".github/workflows/docs.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Lint and strict build
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Отримуємо код. Повна історія потрібна плагіну git-revision-date-localized
+      #    для дат останнього редагування сторінок.
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      # 2. Налаштовуємо Python (кеш pip прискорює повторні запуски).
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-docs.txt
+
+      # 3. Встановлюємо MkDocs Material і плагіни.
+      - name: Install docs dependencies
+        run: pip install -r requirements-docs.txt
+
+      # 4. Перевірка стилю Markdown (правила в .markdownlint-cli2.yaml).
+      - name: markdownlint
+        run: npx --yes markdownlint-cli2@0.14.0 "docs/**/*.md" "README.md"
+
+      # 4б. Безперервний аудит актуальності: перелік сторінок із простроченим review_date.
+      - name: Review date audit
+        run: python scripts/check_review_dates.py
+
+      # 5. Strict-збірка: будь-яке попередження (мертве посилання, сторінка поза nav,
+      #    зламана розмітка) завершує крок з Exit Code 1 і зупиняє конвеєр.
+      - name: Strict build
+        run: mkdocs build --strict
+
+      # 6. Готуємо артефакт для публікації (лише для main).
+      - name: Configure Pages
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/configure-pages@v5
+
+      - name: Upload site artifact
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+  # 7. Деплой на GitHub Pages: тільки з main і тільки якщо build пройшов.
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

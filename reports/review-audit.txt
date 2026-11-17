@@ -1,0 +1,31 @@
+### Фактичний стан (сьогодні)
+Аудит актуальності документації станом на 2026-11-17
+Сторінок з актуальним паспортом: 12
+
+Прострочені review_date: 0
+
+Застарілі сторінки (status: deprecated): 0
+
+Дефекти паспортів: 0
+
+### Імітація майбутньої дати (2027-06-01)
+Аудит актуальності документації станом на 2027-06-01
+Сторінок з актуальним паспортом: 0
+
+Прострочені review_date: 12
+  - docs/api/index.md  (owner: Mariia Hutsuliak, review_date: 2027-02-12, прострочено на 109 дн.)
+  - docs/architecture/adr/0001-postgresql-as-primary-store.md  (owner: Mariia Hutsuliak, review_date: 2027-05-13, прострочено на 19 дн.)
+  - docs/architecture/adr/0002-flask-monolith-with-json-api.md  (owner: Mariia Hutsuliak, review_date: 2027-05-13, прострочено на 19 дн.)
+  - docs/architecture/adr/0003-documentation-as-code-mkdocs.md  (owner: Mariia Hutsuliak, review_date: 2027-05-13, прострочено на 19 дн.)
+  - docs/architecture/adr/0004-api-first-openapi-contract.md  (owner: Mariia Hutsuliak, review_date: 2027-05-13, прострочено на 19 дн.)
+  - docs/architecture/adr/index.md  (owner: Mariia Hutsuliak, review_date: 2027-05-13, прострочено на 19 дн.)
+  - docs/architecture/isd.md  (owner: Mariia Hutsuliak, review_date: 2027-02-12, прострочено на 109 дн.)
+  - docs/architecture/sdd.md  (owner: Mariia Hutsuliak, review_date: 2027-05-13, прострочено на 19 дн.)
+  - docs/developer/CONTRIBUTING.md  (owner: Mariia Hutsuliak, review_date: 2027-02-12, прострочено на 109 дн.)
+  - docs/developer/audit.md  (owner: Mariia Hutsuliak, review_date: 2027-05-13, прострочено на 19 дн.)
+  - docs/developer/maintenance.md  (owner: Mariia Hutsuliak, review_date: 2027-05-13, прострочено на 19 дн.)
+  - docs/index.md  (owner: Mariia Hutsuliak, review_date: 2027-05-13, прострочено на 19 дн.)
+
+Застарілі сторінки (status: deprecated): 0
+
+Дефекти паспортів: 0

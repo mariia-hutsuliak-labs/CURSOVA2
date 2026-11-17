@@ -1,0 +1,52 @@
+site_name: CURSOVA2 — база знань
+site_description: Документація інформаційної системи книгарні (Documentation as Code)
+site_url: https://mariia-hutsuliak-labs.github.io/CURSOVA2/
+repo_url: https://github.com/mariia-hutsuliak-labs/CURSOVA2
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  language: uk
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+
+nav:
+  - Головна: index.md
+  - "Рівень 2: Розробникам":
+      - Як долучитися: developer/CONTRIBUTING.md
+      - Регламент підтримки документації: developer/maintenance.md
+      - Аудит документації ЛР10 (архів): developer/audit.md
+  - "Рівень 3: API":
+      - Довідник API: api/index.md
+  - "Рівень 4: Архітектура":
+      - SDD (проєктування): architecture/sdd.md
+      - ISD (інфраструктура): architecture/isd.md
+      - Реєстр ADR: architecture/adr/index.md
+      - "ADR-0001: PostgreSQL": architecture/adr/0001-postgresql-as-primary-store.md
+      - "ADR-0002: Flask-моноліт": architecture/adr/0002-flask-monolith-with-json-api.md
+      - "ADR-0003: Documentation as Code": architecture/adr/0003-documentation-as-code-mkdocs.md
+      - "ADR-0004: API-first": architecture/adr/0004-api-first-openapi-contract.md
+
+plugins:
+  - search
+  - mermaid2
+  - swagger-ui-tag:
+      tryItOutEnabled: true
+      supportedSubmitMethods: [get]
+  - git-revision-date-localized:
+      type: date
+      enable_creation_date: true
+      fallback_to_build_date: true
+
+markdown_extensions:
+  - tables
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
