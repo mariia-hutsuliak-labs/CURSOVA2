@@ -15,3 +15,7 @@ tags: [ops]
 - [Аудит документації](audit.md)
 - [SDD](../architecture/sdd.md)
 - [Реєстр ADR](../architecture/adr/index.md)
+
+## Політика релізів
+
+Правила випуску версій описано в [політиці релізів](release-policy.md).
