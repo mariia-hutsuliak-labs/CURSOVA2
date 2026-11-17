@@ -1,3 +1,9 @@
+---
+owner: Mariia Hutsuliak
+status: published
+review_date: 2027-05-13
+---
+
 # SDD: документ проєктування системи (System Design Document)
 
 Цей документ відповідає на питання «як система влаштована всередині». Де і на чому вона працює, описано в [isd.md](isd.md). Чому вибрано саме такі рішення, описано в [ADR](adr/0001-postgresql-as-primary-store.md).

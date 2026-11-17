@@ -1,3 +1,9 @@
+---
+owner: Mariia Hutsuliak
+status: published
+review_date: 2027-02-12
+---
+
 # ISD: специфікація інфраструктури (Infrastructure Specification Document)
 
 Цей документ відповідає на питання «де і на чому система працює, як її розгорнути і відновити». Внутрішню структуру описано в [sdd.md](sdd.md).

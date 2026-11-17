@@ -1,3 +1,9 @@
+---
+owner: Mariia Hutsuliak
+status: published
+review_date: 2027-05-13
+---
+
 # Аудит документації (ЛР10)
 
 Стан на **2026-11-14**, до створення архітектурного паспорта (baseline: HEAD `b3695c7`, 33 коміти, історія з 2026-09-11 до 2026-11-08). Власник: Mariia Hutsuliak. Повторюваний автоматичний аудит: `bash scripts/doc-audit.sh`.

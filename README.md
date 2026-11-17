@@ -14,7 +14,7 @@
 
 ## Швидкий старт (для новачка)
 
-Потрібно: Python 3.9 (версія середовища проєкту, див. `docs/isd.md`), PostgreSQL, Git.
+Потрібно: Python 3.9 (версія середовища проєкту, див. `docs/architecture/isd.md`), PostgreSQL, Git.
 
 ```bash
 git clone https://github.com/MariiaHutsuliak/CURSOVA2.git
@@ -44,13 +44,13 @@ bash scripts/doc-audit.sh            # аудит актуальності до�
 
 | Хочу зрозуміти... | Документ |
 |---|---|
-| як система влаштована всередині (компоненти, модель даних, API) | [docs/sdd.md](docs/sdd.md) |
-| де і як вона розгортається, середовища, CI/CD, відновлення | [docs/isd.md](docs/isd.md) |
-| чому прийняті саме такі рішення | [docs/architecture/adr/](docs/architecture/adr/) |
-| хто відповідає за документи і як часто їх переглядають | [docs/maintenance.md](docs/maintenance.md) |
+| як система влаштована всередині (компоненти, модель даних, API) | [docs/architecture/sdd.md](docs/architecture/sdd.md) |
+| де і як вона розгортається, середовища, CI/CD, відновлення | [docs/architecture/isd.md](docs/architecture/isd.md) |
+| чому прийняті саме такі рішення | [docs/architecture/adr/](docs/architecture/adr/0001-postgresql-as-primary-store.md) |
+| хто відповідає за документи і як часто їх переглядають | [docs/developer/maintenance.md](docs/developer/maintenance.md) |
 | яка політика безпеки залежностей і секретів | [SECURITY.md](SECURITY.md) |
-| який стан документації зараз | [docs/audit.md](docs/audit.md) |
+| який стан документації зараз | [docs/developer/audit.md](docs/developer/audit.md) |
 
 ## Правило внесків
 
-**Зміна коду = зміна документації.** Якщо ви додаєте маршрут, змінну середовища чи компонент, оновіть `docs/sdd.md` та/або `docs/isd.md` у тому самому коміті. Перед злиттям запускайте `bash scripts/doc-audit.sh`: код завершення 1 означає, що документація відстала.
+**Зміна коду = зміна документації.** Якщо ви додаєте маршрут, змінну середовища чи компонент, оновіть `docs/architecture/sdd.md` та/або `docs/architecture/isd.md` у тому самому коміті. Перед злиттям запускайте `bash scripts/doc-audit.sh`: код завершення 1 означає, що документація відстала.
