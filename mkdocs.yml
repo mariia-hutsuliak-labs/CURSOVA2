@@ -17,7 +17,7 @@ nav:
   - "Рівень 2: Розробникам":
       - Як долучитися: developer/CONTRIBUTING.md
       - Регламент підтримки документації: developer/maintenance.md
-      - Аудит документації (ЛР10): developer/audit.md
+      - Аудит документації ЛР10 (архів): developer/audit.md
   - "Рівень 3: API":
       - Довідник API: api/index.md
   - "Рівень 4: Архітектура":

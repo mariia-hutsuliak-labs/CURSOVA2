@@ -1,11 +1,14 @@
 ---
 owner: Mariia Hutsuliak
-status: published
+status: deprecated
+superseded_by: docs/developer/maintenance.md
 review_date: 2027-05-13
 tags: [ops, architecture]
 ---
 
 # Аудит документації (ЛР10)
+
+> **Застаріла сторінка (deprecated).** Це історичний знімок аудиту ЛР10 станом на 2026-11-14. Актуальні правила й перевірки описані в [Регламенті підтримки документації](maintenance.md) та в [правилах внесків](CONTRIBUTING.md). Актуальність паспортів перевіряє `scripts/check_review_dates.py`.
 
 Стан на **2026-11-14**, до створення архітектурного паспорта (baseline: HEAD `b3695c7`, 33 коміти, історія з 2026-09-11 до 2026-11-08). Власник: Mariia Hutsuliak. Повторюваний автоматичний аудит: `bash scripts/doc-audit.sh`.
 

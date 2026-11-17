@@ -16,4 +16,4 @@ tags: [architecture, api, ops]
 | 3 | Як інтегруватися? | [API](api/index.md) |
 | 4 | Чому система влаштована саме так? | [SDD](architecture/sdd.md), [ISD](architecture/isd.md), [ADR](architecture/adr/0001-postgresql-as-primary-store.md) |
 
-Додатково: [реєстр ADR](architecture/adr/index.md), [регламент підтримки](developer/maintenance.md), [аудит документації](developer/audit.md).
+Додатково: [реєстр ADR](architecture/adr/index.md), [регламент підтримки](developer/maintenance.md), [правила внесків](developer/CONTRIBUTING.md).
