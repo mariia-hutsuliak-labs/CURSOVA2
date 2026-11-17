@@ -65,11 +65,13 @@ Code-Doc Change Ratio для ключових компонентів за всю
 ## 3. Діагноз антипатернів
 
 **Documentation Decay (документ описує систему, якої вже немає):**
+
 1. `SECURITY.md` стверджує, що `Werkzeug` оновлено до 3.1.6, а в `requirements.txt` після коміту 2026-10-12 стоїть 3.1.9; також згадує «13/13 автотестів», тоді як тестів 95. Документ відстав на 11 комітів коду.
 2. `.env.example` не містив `LOG_FORMAT`, `LOG_FILE`, `DB_FAULT_MODE`, які код читає з ЛР2 та ЛР4 (Config Drift: 3 змінні з 7).
 3. Застарілі згадки колишнього `queries.py` після рефакторингу ЛР8 (його замінив пакет `analytics/`): докстрінг у `seed_bulk_sales.py` («не змінює app.py, models.py, queries.py») і мапа компонентів у `scripts/ck_metrics.py` (`"Infrastructure": "queries.py"`). Файлу вже немає, а коментар і конфігурація на нього вказують.
 
 **Dead Documentation (документ існує, але споживача немає):**
+
 1. `cc_baseline.txt`, `halstead_baseline.txt`, `halstead_total.txt`, `raw_3files.txt`: жоден файл і жоден скрипт на них не посилається, лежать у корені проєкту.
 
 ## 4. Матриця вердиктів
