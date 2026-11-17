@@ -1,0 +1,10 @@
+2026-11-17T21:03:12Z PREFLIGHT застосунок доступний? GET /login -> 200
+2026-11-17T21:03:12Z BASELINE login як operator виконано
+2026-11-17T21:03:13Z BASELINE GET /api/query6 -> 200; GET /my_history -> 200 (очікується 200 і 200)
+2026-11-17T21:03:13Z PREPARE файл історії оператора: history/user_2.json (резервна копія в reports/incident/history_backup_before_incident.json)
+2026-11-17T21:03:13Z INJECT файл history/user_2.json обрізано посеред JSON (імітація збою під час запису, TD-2)
+2026-11-17T21:03:13Z DETECT перша помилка: GET /api/query6 -> 500 (ручне виявлення, алерти ALR-001..003 не налаштовані)
+2026-11-17T21:03:24Z IMPACT за вікно інциденту: запитів 20, з помилкою 20 (частка помилок 100%)
+2026-11-17T21:03:24Z MITIGATE тимчасовий обхід: пошкоджений файл прибрано в reports/incident/user_corrupt_20261117T210324Z.json (історія користувача скидається, звіти працюють)
+2026-11-17T21:03:24Z STABILIZED GET /api/query6 -> 200; GET /my_history -> 200
+2026-11-17T21:03:24Z CLEANUP файл історії повернуто з резервної копії; симуляцію завершено

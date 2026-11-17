@@ -18,6 +18,19 @@ nav:
       - Як долучитися: developer/CONTRIBUTING.md
       - Регламент підтримки документації: developer/maintenance.md
       - Аудит документації ЛР10 (архів): developer/audit.md
+  - "Рівень 3: Експлуатація":
+      - "RB-001: відновлення БД": runbooks/RB-001.md
+      - "Legacy: history_utils": legacy/history-utils.md
+      - "INC-001: звіт про інцидент": incidents/INC-001.md
+      - "INC-001: Post-Mortem і RCA": incidents/INC-001-postmortem.md
+      - "INC-001: план CAPA": incidents/capa-INC-001.md
+      - "План супроводу (SWEBOK)": maintenance-plan.md
+  - "Рівень 3: Управління змінами":
+      - "Регламент CCB": change-management/ccb-charter.md
+      - "RFC-001: заявка": change-management/RFC-001.md
+      - "RFC-001: Impact Analysis": change-management/impact-analysis-RFC-001.md
+      - "RFC-001: протокол CCB": change-management/ccb-protocol-RFC-001.md
+      - "RFC-001: Release Checklist": change-management/release-checklist-RFC-001.md
   - "Рівень 3: API":
       - Довідник API: api/index.md
   - "Рівень 4: Архітектура":

@@ -11,3 +11,5 @@ instance/
 .obsidian/
 site/
 sdk-client/
+backups/
+reports/incident/history_backup_before_incident.json
