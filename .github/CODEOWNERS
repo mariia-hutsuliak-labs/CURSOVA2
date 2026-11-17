@@ -1,0 +1,7 @@
+# Власник документації (Documentation Owner, Лекція 8):
+# будь-яка зміна в цих шляхах потребує рев'ю власника перед злиттям.
+/docs/              @MariiaHutsuliak
+/README.md          @MariiaHutsuliak
+/mkdocs.yml         @MariiaHutsuliak
+/docs/api/          @MariiaHutsuliak
+/.github/workflows/ @MariiaHutsuliak
