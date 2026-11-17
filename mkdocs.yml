@@ -18,6 +18,9 @@ nav:
       - Як долучитися: developer/CONTRIBUTING.md
       - Регламент підтримки документації: developer/maintenance.md
       - Аудит документації ЛР10 (архів): developer/audit.md
+  - "Рівень 3: Експлуатація":
+      - "RB-001: відновлення БД": runbooks/RB-001.md
+      - "Legacy: history_utils": legacy/history-utils.md
   - "Рівень 3: API":
       - Довідник API: api/index.md
   - "Рівень 4: Архітектура":
