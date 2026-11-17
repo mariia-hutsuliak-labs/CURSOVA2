@@ -10,3 +10,4 @@ instance/
 .DS_Store
 .obsidian/
 site/
+sdk-client/

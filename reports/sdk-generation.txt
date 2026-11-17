@@ -1,0 +1,110 @@
+Unable to find image 'openapitools/openapi-generator-cli:latest' locally
+latest: Pulling from openapitools/openapi-generator-cli
+c4c58085abf5: Pulling fs layer
+4c57c47ce043: Pulling fs layer
+35c30fbcd8c0: Pulling fs layer
+0b613318ea87: Pulling fs layer
+84b53de1edea: Pulling fs layer
+7ffc538de8d6: Pulling fs layer
+15495dc017b2: Pulling fs layer
+65110997f441: Pulling fs layer
+44136fa355b3: Already exists
+77a172eef258: Download complete
+4c57c47ce043: Download complete
+c4c58085abf5: Download complete
+7ffc538de8d6: Download complete
+0b613318ea87: Download complete
+0b613318ea87: Pull complete
+15495dc017b2: Download complete
+35c30fbcd8c0: Download complete
+84b53de1edea: Download complete
+15495dc017b2: Pull complete
+65110997f441: Download complete
+65110997f441: Pull complete
+4c57c47ce043: Pull complete
+35c30fbcd8c0: Pull complete
+c4c58085abf5: Pull complete
+7ffc538de8d6: Pull complete
+84b53de1edea: Pull complete
+Digest: sha256:52bf9cd234c903a4552e8019048dd6b5f092965e5f402d7f447123709b3e1fe4
+Status: Downloaded newer image for openapitools/openapi-generator-cli:latest
+[main] INFO  o.o.codegen.DefaultGenerator - Generating with dryRun=false
+[main] INFO  o.o.c.ignore.CodegenIgnoreProcessor - Output directory (/local/sdk-client) does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
+[main] INFO  o.o.codegen.DefaultGenerator - OpenAPI Generator: python (client)
+[main] INFO  o.o.codegen.DefaultGenerator - Generator 'python' is considered stable.
+[main] INFO  o.o.c.l.AbstractPythonCodegen - Environment variable PYTHON_POST_PROCESS_FILE not defined so the Python code may not be properly formatted. To define it, try 'export PYTHON_POST_PROCESS_FILE="/usr/local/bin/yapf -i"' (Linux/Mac)
+[main] INFO  o.o.c.l.AbstractPythonCodegen - NOTE: To enable file post-processing, 'enablePostProcessFile' must be set to `true` (--enable-post-process-file for CLI).
+[main] INFO  o.o.codegen.InlineModelResolver - Inline schema created as PersonalDataExport_subject. To have complete control of the model name, set the `title` field or use the modelNameMapping option (e.g. --model-name-mappings PersonalDataExport_subject=NewModel,ModelA=NewModelA in CLI) or inlineSchemaNameMapping option (--inline-schema-name-mappings PersonalDataExport_subject=NewModel,ModelA=NewModelA in CLI).
+[main] WARN  o.o.codegen.utils.ModelUtils - Failed to get the schema name: null
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/openapi_client/models/degraded_response.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/test/test_degraded_response.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/docs/DegradedResponse.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/openapi_client/models/error.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/test/test_error.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/docs/Error.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/openapi_client/models/export_metadata.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/test/test_export_metadata.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/docs/ExportMetadata.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/openapi_client/models/export_section.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/test/test_export_section.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/docs/ExportSection.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/openapi_client/models/low_stock_item.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/test/test_low_stock_item.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/docs/LowStockItem.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/openapi_client/models/low_stock_response.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/test/test_low_stock_response.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/docs/LowStockResponse.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/openapi_client/models/personal_data_export.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/test/test_personal_data_export.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/docs/PersonalDataExport.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/openapi_client/models/personal_data_export_subject.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/test/test_personal_data_export_subject.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/docs/PersonalDataExportSubject.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/openapi_client/models/sale_line.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/test/test_sale_line.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/docs/SaleLine.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/openapi_client/models/sales_details_response.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/test/test_sales_details_response.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/docs/SalesDetailsResponse.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/openapi_client/models/sales_filters.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/test/test_sales_filters.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/docs/SalesFilters.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/openapi_client/api/analytics_api.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/test/test_analytics_api.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/docs/AnalyticsApi.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/openapi_client/api/inventory_api.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/test/test_inventory_api.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/docs/InventoryApi.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/openapi_client/api/privacy_api.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/test/test_privacy_api.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/docs/PrivacyApi.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/README.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/tox.ini
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/test-requirements.txt
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/requirements.txt
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/setup.cfg
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/git_push.sh
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/.gitignore
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/.travis.yml
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/.github/workflows/python.yml
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/.gitlab-ci.yml
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/setup.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/pyproject.toml
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/openapi_client/py.typed
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/openapi_client/configuration.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/openapi_client/__init__.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/openapi_client/models/__init__.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/openapi_client/api/__init__.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/openapi_client/exceptions.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/test/__init__.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/openapi_client/api_client.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/openapi_client/api_response.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/openapi_client/rest.py
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/.openapi-generator-ignore
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/.openapi-generator/VERSION
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/sdk-client/.openapi-generator/FILES
+############################################################################################
+# Thanks for using OpenAPI Generator.                                                      #
+# We appreciate your support! Please consider donating to help us maintain this project.   #
+# https://opencollective.com/openapi_generator/donate                                      #
+############################################################################################
