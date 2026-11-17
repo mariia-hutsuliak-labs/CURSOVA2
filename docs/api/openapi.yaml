@@ -1,0 +1,556 @@
+openapi: 3.0.3
+info:
+  title: CURSOVA2 Bookstore API
+  version: 1.0.0
+  description: |
+    JSON API інформаційної системи книгарні (Flask-застосунок `app.py`).
+    Контракт описує три реальні маршрути: контроль залишків (додано в ЛР10),
+    аналітичний запит із деградованою відповіддю (ЛР2) та експорт персональних даних (ЛР4).
+
+    Автентифікація: сесійна cookie Flask-Login (спочатку вхід через `/login`).
+    Версія контракту веде SemVer: зміна формату відповіді = нова мажорна версія.
+  contact:
+    name: Mariia Hutsuliak
+    url: https://github.com/MariiaHutsuliak/CURSOVA2
+servers:
+  - url: http://127.0.0.1:5000
+    description: Локальний сервер розробки (python app.py)
+tags:
+  - name: Inventory
+    description: Контроль залишків товарів
+  - name: Analytics
+    description: Аналітичні запити
+  - name: Privacy
+    description: Права суб'єкта персональних даних
+security:
+  - sessionCookie: []
+paths:
+  /api/inventory/low-stock:
+    get:
+      tags: [Inventory]
+      operationId: getLowStockProducts
+      summary: Товари з низьким залишком
+      description: >-
+        Повертає не видалені товари, залишок яких не перевищує поріг
+        `LOW_STOCK_THRESHOLD` (змінна середовища, за замовчуванням 5),
+        відсортовані від найменшого залишку. Доступно ролям operator та administrator.
+      responses:
+        '200':
+          description: Список товарів із низьким залишком.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LowStockResponse'
+              examples:
+                lowStock:
+                  summary: Два товари нижче порога
+                  value:
+                    threshold: 5
+                    count: 2
+                    items:
+                      - id: 12
+                        name: Кобзар
+                        stock_quantity: 1
+                      - id: 7
+                        name: Лісова пісня
+                        stock_quantity: 4
+        '302':
+          $ref: '#/components/responses/LoginRedirect'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/query6:
+    get:
+      tags: [Analytics]
+      operationId: getSalesDetails
+      summary: Деталі продажів за фільтрами
+      description: >-
+        Аналітичний запит 6: рядки продажів за датою, місяцем, категорією та постачальником.
+        Звернення до БД виконується з повторними спробами (retry з backoff). Якщо БД недоступна,
+        повертається контрольована деградована відповідь 503 із порожнім списком продажів.
+        Доступно ролям authorized_user, operator та administrator.
+      parameters:
+        - name: target_date
+          in: query
+          description: Дата продажу у форматі YYYY-MM-DD. Некоректне значення ігнорується.
+          required: false
+          schema:
+            type: string
+            format: date
+            example: '2026-11-10'
+        - name: month
+          in: query
+          description: Номер місяця (лише цифри). Нецифрове значення ігнорується.
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 12
+            example: 11
+        - name: category
+          in: query
+          description: Назва категорії товару.
+          required: false
+          schema:
+            type: string
+            example: Художня література
+        - name: supplier
+          in: query
+          description: Назва постачальника.
+          required: false
+          schema:
+            type: string
+            example: Видавництво Старого Лева
+      responses:
+        '200':
+          description: Продажі, що відповідають фільтрам.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SalesDetailsResponse'
+              examples:
+                oneSale:
+                  summary: Один продаж за листопад
+                  value:
+                    filters:
+                      target_date: null
+                      month: 11
+                      category: Художня література
+                      supplier: null
+                    sales:
+                      - sale_id: 101
+                        sale_date: '2026-11-10'
+                        sale_time: '14:32:05'
+                        employee: Петренко Олена
+                        product_name: Кобзар
+                        category: Художня література
+                        quantity: 2
+                        unit_price: 250.0
+                        total_price: 500.0
+        '302':
+          $ref: '#/components/responses/LoginRedirect'
+        '503':
+          description: База даних тимчасово недоступна; контрольована деградована відповідь.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DegradedResponse'
+              examples:
+                degraded:
+                  summary: Збій БД після трьох спроб
+                  value:
+                    degraded: true
+                    message: Сервіс тимчасово недоступний. Спробуйте, будь ласка, пізніше.
+                    filters:
+                      target_date: '2026-11-10'
+                      month: null
+                      category: null
+                      supplier: null
+                    sales: []
+  /api/users/{user_id}/personal-data:
+    get:
+      tags: [Privacy]
+      operationId: exportPersonalData
+      summary: Експорт персональних даних користувача (Right of Access)
+      description: >-
+        Повертає повний експорт даних суб'єкта: профіль, історію активності, заявки на реєстрацію
+        та згоди. Дозволено лише самому користувачеві або адміністратору. Для всіх інших відповідь
+        однакова (403) незалежно від того, чи існує профіль. Відповідь не кешується (`Cache-Control: no-store`).
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: Ідентифікатор користувача, дані якого експортуються.
+          schema:
+            type: integer
+            minimum: 1
+            example: 2
+      responses:
+        '200':
+          description: Експорт персональних даних (schema_version 1.0).
+          headers:
+            Cache-Control:
+              description: Завжди `no-store`, бо відповідь містить персональні дані.
+              schema:
+                type: string
+                example: no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalDataExport'
+              examples:
+                export:
+                  summary: Скорочений експорт користувача 2
+                  value:
+                    schema_version: '1.0'
+                    metadata:
+                      generated_at: '2026-11-17T18:30:00+00:00'
+                      time_zone: UTC
+                      correlation_id: 3f2a9c1e
+                      format: application/json
+                      categories: [profile, settings, activity_history, registration_requests, consents]
+                      omitted_fields: [users.password_hash, users.role]
+                      warnings: []
+                    subject:
+                      id: 2
+                    profile:
+                      source: users
+                      time_zone: UTC
+                      available: true
+                      data:
+                        id: 2
+                        username: operator
+                        email: operator@example.com
+                        created_at: '2026-09-11T08:00:00+00:00'
+                    settings:
+                      source: null
+                      time_zone: null
+                      available: false
+                      data: {}
+                      note: The system stores no user-configurable settings.
+                    activity_history:
+                      source: [users.api_history, history/user_2.json]
+                      time_zone: server-local
+                      available: true
+                      data: []
+                    registration_requests:
+                      source: user_requests
+                      time_zone: UTC
+                      available: true
+                      data: []
+                    consents:
+                      source: [user_consents, user_consent_events]
+                      time_zone: UTC
+                      available: true
+                      data: {}
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: session
+      description: Сесійна cookie Flask-Login, яку видає `POST /login`.
+  responses:
+    LoginRedirect:
+      description: >-
+        Користувач не автентифікований або не має потрібної ролі: застосунок перенаправляє
+        на сторінку входу чи головну сторінку (HTML), а не повертає JSON-помилку.
+      headers:
+        Location:
+          description: Адреса, куди перенаправлено запит.
+          schema:
+            type: string
+            example: /login
+    Unauthorized:
+      description: Користувач не автентифікований.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            unauthorized:
+              value:
+                error: unauthorized
+    Forbidden:
+      description: Автентифікований, але не є суб'єктом даних і не адміністратор.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            forbidden:
+              value:
+                error: forbidden
+    NotFound:
+      description: Профіль не знайдено (бачить лише адміністратор).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            notFound:
+              value:
+                error: not_found
+    InternalError:
+      description: Внутрішня помилка сервера (Flask за замовчуванням повертає HTML-сторінку).
+      content:
+        text/html:
+          schema:
+            type: string
+            example: '<!doctype html><title>500 Internal Server Error</title>'
+  schemas:
+    Error:
+      type: object
+      description: 'Спільна схема помилки для JSON-відповідей 4xx.'
+      required: [error]
+      properties:
+        error:
+          type: string
+          enum: [unauthorized, forbidden, not_found]
+          description: Машинозчитуваний код помилки.
+          example: forbidden
+      example:
+        error: forbidden
+    LowStockItem:
+      type: object
+      required: [id, name, stock_quantity]
+      properties:
+        id:
+          type: integer
+          description: Ідентифікатор товару.
+          example: 12
+        name:
+          type: string
+          description: Назва товару.
+          example: Кобзар
+        stock_quantity:
+          type: integer
+          minimum: 0
+          description: Поточний залишок на складі.
+          example: 1
+      example:
+        id: 12
+        name: Кобзар
+        stock_quantity: 1
+    LowStockResponse:
+      type: object
+      required: [threshold, count, items]
+      properties:
+        threshold:
+          type: integer
+          minimum: 0
+          description: Поточний поріг низького залишку.
+          example: 5
+        count:
+          type: integer
+          minimum: 0
+          description: Кількість знайдених товарів.
+          example: 1
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/LowStockItem'
+      example:
+        threshold: 5
+        count: 1
+        items:
+          - id: 12
+            name: Кобзар
+            stock_quantity: 1
+    SaleLine:
+      type: object
+      required: [sale_id, sale_date, sale_time, employee, product_name, category, quantity, unit_price, total_price]
+      properties:
+        sale_id:
+          type: integer
+          example: 101
+        sale_date:
+          type: string
+          format: date
+          example: '2026-11-10'
+        sale_time:
+          type: string
+          description: Час продажу у форматі HH:MM:SS.
+          example: '14:32:05'
+        employee:
+          type: string
+          example: Петренко Олена
+        product_name:
+          type: string
+          example: Кобзар
+        category:
+          type: string
+          example: Художня література
+        quantity:
+          type: integer
+          minimum: 1
+          example: 2
+        unit_price:
+          type: number
+          example: 250.0
+        total_price:
+          type: number
+          example: 500.0
+      example:
+        sale_id: 101
+        sale_date: '2026-11-10'
+        sale_time: '14:32:05'
+        employee: Петренко Олена
+        product_name: Кобзар
+        category: Художня література
+        quantity: 2
+        unit_price: 250.0
+        total_price: 500.0
+    SalesFilters:
+      type: object
+      description: Фільтри, з якими виконано запит (порожній фільтр повертається як null).
+      properties:
+        target_date:
+          type: string
+          nullable: true
+          description: Значення параметра `target_date` у тому вигляді, як його надіслано.
+          example: '2026-11-10'
+        month:
+          type: integer
+          nullable: true
+          example: 11
+        category:
+          type: string
+          nullable: true
+          example: Художня література
+        supplier:
+          type: string
+          nullable: true
+          example: null
+      example:
+        target_date: '2026-11-10'
+        month: null
+        category: null
+        supplier: null
+    SalesDetailsResponse:
+      type: object
+      required: [filters, sales]
+      properties:
+        filters:
+          $ref: '#/components/schemas/SalesFilters'
+        sales:
+          type: array
+          items:
+            $ref: '#/components/schemas/SaleLine'
+      example:
+        filters:
+          target_date: '2026-11-10'
+          month: null
+          category: null
+          supplier: null
+        sales: []
+    DegradedResponse:
+      type: object
+      description: 'Деградована відповідь 503 (сервіс живий, але БД недоступна).'
+      required: [degraded, message, filters, sales]
+      properties:
+        degraded:
+          type: boolean
+          description: Завжди true.
+          example: true
+        message:
+          type: string
+          example: Сервіс тимчасово недоступний. Спробуйте, будь ласка, пізніше.
+        filters:
+          $ref: '#/components/schemas/SalesFilters'
+        sales:
+          type: array
+          description: Завжди порожній масив.
+          items:
+            $ref: '#/components/schemas/SaleLine'
+      example:
+        degraded: true
+        message: Сервіс тимчасово недоступний. Спробуйте, будь ласка, пізніше.
+        filters:
+          target_date: '2026-11-10'
+          month: null
+          category: null
+          supplier: null
+        sales: []
+    ExportSection:
+      type: object
+      description: Однакова форма кожної секції експорту.
+      required: [source, time_zone, available, data]
+      properties:
+        source:
+          description: Звідки взято дані (рядок, список рядків або null, якщо джерела немає).
+          example: users
+        time_zone:
+          type: string
+          nullable: true
+          example: UTC
+        available:
+          type: boolean
+          description: Чи є дані в цій категорії.
+          example: true
+        data:
+          description: Вміст секції (об'єкт або масив залежно від категорії).
+          example: []
+        note:
+          type: string
+          description: Пояснення, якщо категорію пропущено або дані мають особливості.
+          example: The system stores no user-configurable settings.
+      example:
+        source: users
+        time_zone: UTC
+        available: true
+        data: {}
+    ExportMetadata:
+      type: object
+      required: [generated_at, time_zone, correlation_id, format, categories, omitted_fields, warnings]
+      properties:
+        generated_at:
+          type: string
+          format: date-time
+          example: '2026-11-17T18:30:00+00:00'
+        time_zone:
+          type: string
+          example: UTC
+        correlation_id:
+          type: string
+          nullable: true
+          example: 3f2a9c1e
+        format:
+          type: string
+          example: application/json
+        categories:
+          type: array
+          items:
+            type: string
+          example: [profile, settings, activity_history, registration_requests, consents]
+        omitted_fields:
+          type: array
+          description: Поля, які навмисно не експортуються (мінімізація даних).
+          items:
+            type: string
+          example: [users.password_hash]
+        warnings:
+          type: array
+          items:
+            type: string
+          example: []
+      example:
+        generated_at: '2026-11-17T18:30:00+00:00'
+        time_zone: UTC
+        correlation_id: 3f2a9c1e
+        format: application/json
+        categories: [profile]
+        omitted_fields: [users.password_hash]
+        warnings: []
+    PersonalDataExport:
+      type: object
+      required: [schema_version, metadata, subject, profile, settings, activity_history, registration_requests, consents]
+      properties:
+        schema_version:
+          type: string
+          description: Версія схеми експорту.
+          example: '1.0'
+        metadata:
+          $ref: '#/components/schemas/ExportMetadata'
+        subject:
+          type: object
+          required: [id]
+          properties:
+            id:
+              type: integer
+              example: 2
+        profile:
+          $ref: '#/components/schemas/ExportSection'
+        settings:
+          $ref: '#/components/schemas/ExportSection'
+        activity_history:
+          $ref: '#/components/schemas/ExportSection'
+        registration_requests:
+          $ref: '#/components/schemas/ExportSection'
+        consents:
+          $ref: '#/components/schemas/ExportSection'
