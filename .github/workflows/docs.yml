@@ -56,6 +56,10 @@ jobs:
       - name: markdownlint
         run: npx --yes markdownlint-cli2@0.14.0 "docs/**/*.md" "README.md"
 
+      # 4б. Безперервний аудит актуальності: перелік сторінок із простроченим review_date.
+      - name: Review date audit
+        run: python scripts/check_review_dates.py
+
       # 5. Strict-збірка: будь-яке попередження (мертве посилання, сторінка поза nav,
       #    зламана розмітка) завершує крок з Exit Code 1 і зупиняє конвеєр.
       - name: Strict build
