@@ -2,6 +2,7 @@
 owner: Mariia Hutsuliak
 status: published
 review_date: 2027-05-13
+tags: [architecture]
 ---
 
 # ADR-0001: PostgreSQL як основне сховище даних

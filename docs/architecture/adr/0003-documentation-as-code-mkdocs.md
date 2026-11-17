@@ -2,6 +2,7 @@
 owner: Mariia Hutsuliak
 status: published
 review_date: 2027-05-13
+tags: [architecture, ops]
 ---
 
 # ADR-0003: Documentation as Code: MkDocs Material і strict-збірка в CI

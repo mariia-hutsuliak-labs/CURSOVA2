@@ -2,6 +2,7 @@
 owner: Mariia Hutsuliak
 status: published
 review_date: 2027-02-12
+tags: [architecture, ops]
 ---
 
 # ISD: специфікація інфраструктури (Infrastructure Specification Document)
